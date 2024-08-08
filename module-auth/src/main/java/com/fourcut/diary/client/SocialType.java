@@ -1,4 +1,4 @@
-package com.fourcut.client;
+package com.fourcut.diary.client;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
