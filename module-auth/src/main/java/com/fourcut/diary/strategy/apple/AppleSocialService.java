@@ -1,23 +1,22 @@
 package com.fourcut.diary.strategy.apple;
 
 import com.fourcut.diary.client.apple.AppleAuthClient;
+import com.fourcut.diary.client.apple.dto.AppleOAuth2TokenResponse;
 import com.fourcut.diary.client.apple.dto.AppleUserResponse;
-import com.fourcut.diary.constant.StringConstant;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.dto.SocialLoginRequest;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.InvalidParameterException;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.time.LocalDateTime;
@@ -27,6 +26,7 @@ import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AppleSocialService implements SocialStrategy {
 
     @Value("${apple.grant-type}")
@@ -54,24 +54,25 @@ public class AppleSocialService implements SocialStrategy {
     @Override
     public SocialLoginResponse login(SocialLoginRequest request) {
 
-        checkIdentityTokenIsNull(request.identityToken());
+        AppleOAuth2TokenResponse appleOAuth2TokenResponse = getAccessToken(request.authorizationCode());
+        String appleIdToken = appleOAuth2TokenResponse.idToken();
+        System.out.println(appleIdToken);
+        AppleUserResponse appleUser = appleTokenUtil.decodePayload(appleIdToken, AppleUserResponse.class);
 
-        Claims claims = appleTokenUtil.getClaimsByIdentityToken(request.identityToken());
-        String appleAccessToken = getAccessToken(request.authorizationCode());
-        AppleUserResponse appleUser = appleTokenUtil.decodePayload(appleAccessToken, AppleUserResponse.class);
+        System.out.println(appleUser.sub());
         System.out.println(appleUser.email());
 
         return new SocialLoginResponse(1L);
     }
 
-    private String getAccessToken(String authorizationCode) {
+    private AppleOAuth2TokenResponse getAccessToken(String authorizationCode) {
 
         return appleAuthClient.getOAuth2Token(
                 APPLE_CLIENT_ID,
                 generateClientSecret(),
                 APPLE_GRANT_TYPE,
                 authorizationCode
-        ).accessToken();
+        );
     }
 
     private String generateClientSecret() {
@@ -102,12 +103,6 @@ public class AppleSocialService implements SocialStrategy {
             return converter.getPrivateKey(privateKeyInfo);
         } catch (Exception e) {
             throw new RuntimeException("Error converting private key from String", e);
-        }
-    }
-
-    private void checkIdentityTokenIsNull(String identityToken) {
-        if (identityToken == null) {
-            throw new InvalidParameterException(StringConstant.NULL_IDENTITY_TOKEN);
         }
     }
 }

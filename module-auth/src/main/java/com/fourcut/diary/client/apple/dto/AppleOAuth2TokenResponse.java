@@ -6,6 +6,14 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AppleOAuth2TokenResponse(
 
-        String accessToken
+        String accessToken,
+
+        Long expiresIn,
+
+        String idToken,
+
+        String refreshToken,
+
+        String tokenType
 ) {
 }
