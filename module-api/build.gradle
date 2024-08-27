@@ -9,4 +9,5 @@ jar {
 dependencies {
 
     implementation project(':module-auth')
+    implementation project(':module-common')
 }
