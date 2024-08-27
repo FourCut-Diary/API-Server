@@ -11,8 +11,6 @@ public record SocialLoginRequest(
         SocialType socialType,
 
         @NotBlank(message = StringConstant.INVALID_AUTHORIZATION_CODE)
-        String authorizationCode,
-
-        String identityToken
+        String authorizationCode
 ) {
 }
