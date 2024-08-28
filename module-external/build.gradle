@@ -1,19 +1,14 @@
-plugins {
-    id 'java'
+bootJar {
+    enabled = false
 }
 
-group = 'com.fourcut.diary'
-version = 'unspecified'
-
-repositories {
-    mavenCentral()
+jar {
+    enabled = true
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
 
-test {
-    useJUnitPlatform()
+    // AWS
+    implementation platform('software.amazon.awssdk:bom:2.21.1')
+    implementation("software.amazon.awssdk:lambda")
 }
