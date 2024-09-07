@@ -1,0 +1,20 @@
+
+# auth
+kakao:
+  clientId: test
+  redirectUri: test
+
+apple:
+  grant-type: test
+  team-id: test
+  client-id: test
+  key-id: test
+  audience: test
+  private-key: test
+
+# external
+aws:
+  lambda:
+    region: test
+    access-key: test
+    secret-key: test
