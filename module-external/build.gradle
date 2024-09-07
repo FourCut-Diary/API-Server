@@ -7,8 +7,8 @@ jar {
 }
 
 dependencies {
+    implementation("software.amazon.awssdk:bom:2.21.0")
+    implementation("software.amazon.awssdk:lambda:2.21.0")
 
-    // AWS
-    implementation platform('software.amazon.awssdk:bom:2.21.1')
-    implementation("software.amazon.awssdk:lambda")
+    implementation group: 'org.json', name: 'json', version: '20240303'
 }
