@@ -7,7 +7,9 @@ import java.time.LocalDate;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
 
     @Id
@@ -30,16 +32,13 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    @Builder
-    public User newInstance(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
-        return new User(socialId, name, nickname, birthday, gender);
-    }
-
-    private User(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
-        this.socialId = socialId;
-        this.name = name;
-        this.nickname = nickname;
-        this.birthday = birthday;
-        this.gender = gender;
+    public static User newInstance(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
+        return User.builder()
+                .socialId(socialId)
+                .name(name)
+                .nickname(nickname)
+                .birthday(birthday)
+                .gender(gender)
+                .build();
     }
 }
