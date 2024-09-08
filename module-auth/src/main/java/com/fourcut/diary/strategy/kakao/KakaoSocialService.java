@@ -27,11 +27,11 @@ public class KakaoSocialService implements SocialStrategy {
     private final KakaoUserClient kakaoUserClient;
 
     @Override
-    public SocialLoginResponse login(SocialLoginRequest request) {
-        String kakaoAccessToken = getOAuth2Authentication(request.authorizationCode());
+    public SocialLoginResponse getSocialInfo(String authorizationCode) {
+        String kakaoAccessToken = getOAuth2Authentication(authorizationCode);
         KakaoUserResponse kakaoUser = kakaoUserClient.getUserInformation(kakaoAccessToken);
 
-        return new SocialLoginResponse(1L);
+        return new SocialLoginResponse(kakaoUser.id());
     }
 
     private String getOAuth2Authentication(

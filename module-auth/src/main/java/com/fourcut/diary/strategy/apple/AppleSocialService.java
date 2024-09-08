@@ -52,13 +52,13 @@ public class AppleSocialService implements SocialStrategy {
     private final AppleTokenUtil appleTokenUtil;
 
     @Override
-    public SocialLoginResponse login(SocialLoginRequest request) {
+    public SocialLoginResponse getSocialInfo(String authorizationCode) {
 
-        AppleOAuth2TokenResponse appleOAuth2TokenResponse = getAccessToken(request.authorizationCode());
+        AppleOAuth2TokenResponse appleOAuth2TokenResponse = getAccessToken(authorizationCode);
         String appleIdToken = appleOAuth2TokenResponse.idToken();
         AppleUserResponse appleUser = appleTokenUtil.decodePayload(appleIdToken, AppleUserResponse.class);
 
-        return new SocialLoginResponse(1L);
+        return new SocialLoginResponse(appleUser.sub());
     }
 
     private AppleOAuth2TokenResponse getAccessToken(String authorizationCode) {
