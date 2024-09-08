@@ -1,8 +1,5 @@
 package com.fourcut.diary.user;
 
-import com.fourcut.diary.strategy.SocialStrategy;
-import com.fourcut.diary.strategy.SocialStrategyProvider;
-import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;

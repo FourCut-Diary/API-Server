@@ -5,7 +5,6 @@ import com.fourcut.diary.client.kakao.KakaoUserClient;
 import com.fourcut.diary.client.kakao.dto.KakaoOAuth2TokenResponse;
 import com.fourcut.diary.client.kakao.dto.KakaoUserResponse;
 import com.fourcut.diary.strategy.SocialStrategy;
-import com.fourcut.diary.strategy.dto.SocialLoginRequest;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;

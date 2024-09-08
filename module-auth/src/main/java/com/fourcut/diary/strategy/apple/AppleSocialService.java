@@ -4,7 +4,6 @@ import com.fourcut.diary.client.apple.AppleAuthClient;
 import com.fourcut.diary.client.apple.dto.AppleOAuth2TokenResponse;
 import com.fourcut.diary.client.apple.dto.AppleUserResponse;
 import com.fourcut.diary.strategy.SocialStrategy;
-import com.fourcut.diary.strategy.dto.SocialLoginRequest;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
