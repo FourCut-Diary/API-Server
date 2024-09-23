@@ -3,3 +3,5 @@ include 'module-auth'
 include 'module-domain'
 include 'module-api'
 include 'module-common'
+include 'module-external'
+
