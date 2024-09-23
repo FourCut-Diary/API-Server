@@ -5,6 +5,7 @@ import com.fourcut.diary.client.apple.dto.AppleOAuth2TokenResponse;
 import com.fourcut.diary.client.apple.dto.AppleUserResponse;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
+import feign.FeignException;
 import io.jsonwebtoken.JwsHeader;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -62,12 +63,16 @@ public class AppleSocialService implements SocialStrategy {
 
     private AppleOAuth2TokenResponse getAccessToken(String authorizationCode) {
 
-        return appleAuthClient.getOAuth2Token(
-                APPLE_CLIENT_ID,
-                generateClientSecret(),
-                APPLE_GRANT_TYPE,
-                authorizationCode
-        );
+        try {
+            return appleAuthClient.getOAuth2Token(
+                    APPLE_CLIENT_ID,
+                    generateClientSecret(),
+                    APPLE_GRANT_TYPE,
+                    authorizationCode
+            );
+        } catch (FeignException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     private String generateClientSecret() {
@@ -96,8 +101,8 @@ public class AppleSocialService implements SocialStrategy {
 
             PrivateKeyInfo privateKeyInfo = PrivateKeyInfo.getInstance(privateKeyBytes);
             return converter.getPrivateKey(privateKeyInfo);
-        } catch (Exception e) {
-            throw new RuntimeException("Error converting private key from String", e);
+        } catch (Exception exception) {
+            throw new RuntimeException("Error converting private key from String", exception);
         }
     }
 }
