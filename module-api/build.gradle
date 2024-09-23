@@ -1,19 +1,7 @@
-plugins {
-    id 'java'
-}
-
-group = 'org.army'
-version = 'unspecified'
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-}
 
-test {
-    useJUnitPlatform()
+    implementation project(':module-auth')
+    implementation project(':module-common')
+    implementation project(':module-domain')
+    implementation project(':module-external')
 }
