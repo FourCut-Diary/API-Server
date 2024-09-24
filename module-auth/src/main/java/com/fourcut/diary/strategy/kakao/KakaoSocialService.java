@@ -4,6 +4,8 @@ import com.fourcut.diary.client.kakao.KakaoAuthClient;
 import com.fourcut.diary.client.kakao.KakaoUserClient;
 import com.fourcut.diary.client.kakao.dto.KakaoOAuth2TokenResponse;
 import com.fourcut.diary.client.kakao.dto.KakaoUserResponse;
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.exception.model.BadRequestException;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import feign.FeignException;
@@ -35,7 +37,7 @@ public class KakaoSocialService implements SocialStrategy {
 
             return new SocialLoginResponse(kakaoUser.id());
         } catch (FeignException exception) {
-            throw new RuntimeException(exception);
+            throw new BadRequestException(ErrorMessage.INVALID_EXTERNAL_API_DATA);
         }
     }
 
@@ -53,7 +55,7 @@ public class KakaoSocialService implements SocialStrategy {
 
             return "Bearer " + response.accessToken();
         } catch (FeignException exception) {
-            throw new RuntimeException(exception);
+            throw new BadRequestException(ErrorMessage.INVALID_EXTERNAL_API_DATA);
         }
     }
 }
