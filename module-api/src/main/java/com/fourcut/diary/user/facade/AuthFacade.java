@@ -27,7 +27,7 @@ public class AuthFacade {
     public SignupResponse signup(SignupRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
 
-        Long id = userService.createUser(socialLoginResponse.socialId(), request.name(), request.nickname(), request.birthday(), request.gender());
+        Long id = userService.createUser(socialLoginResponse.socialId(), request.nickname(), request.birthday(), request.gender(), request.dailyStartTime(), request.dailyEndTime());
         lambdaService.enrollFcmTokenInSNS(request.fcmToken());
         return new SignupResponse(id, "accessToken", "refreshToken");
     }

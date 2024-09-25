@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -20,9 +21,6 @@ public class User {
     private String socialId;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
@@ -32,13 +30,20 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
-    public static User newInstance(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
+    @Column(nullable = false)
+    private LocalTime dailyStartTime;
+
+    @Column(nullable = false)
+    private LocalTime dailyEndTime;
+
+    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime) {
         return User.builder()
                 .socialId(socialId)
-                .name(name)
                 .nickname(nickname)
                 .birthday(birthday)
                 .gender(gender)
+                .dailyStartTime(dailyStartTime)
+                .dailyEndTime(dailyEndTime)
                 .build();
     }
 }

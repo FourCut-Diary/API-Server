@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Service
 @RequiredArgsConstructor
@@ -13,10 +14,10 @@ public class UserService {
     private final UserCreator userCreator;
     private final UserRetriever userRetriever;
 
-    public Long createUser(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
+    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime) {
 
         userRetriever.checkAlreadyExistedUser(socialId);
-        return userCreator.createUser(socialId, name, nickname, birthday, gender);
+        return userCreator.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime);
     }
 
     public Long getUser(String socialId) {
