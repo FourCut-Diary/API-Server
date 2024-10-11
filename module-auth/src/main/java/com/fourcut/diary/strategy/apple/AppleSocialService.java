@@ -3,6 +3,8 @@ package com.fourcut.diary.strategy.apple;
 import com.fourcut.diary.client.apple.AppleAuthClient;
 import com.fourcut.diary.client.apple.dto.AppleOAuth2TokenResponse;
 import com.fourcut.diary.client.apple.dto.AppleUserResponse;
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.exception.model.BadRequestException;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import feign.FeignException;
@@ -71,7 +73,7 @@ public class AppleSocialService implements SocialStrategy {
                     authorizationCode
             );
         } catch (FeignException exception) {
-            throw new RuntimeException(exception);
+            throw new BadRequestException(ErrorMessage.INVALID_EXTERNAL_API_DATA);
         }
     }
 

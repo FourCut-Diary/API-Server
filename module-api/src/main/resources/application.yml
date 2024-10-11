@@ -34,3 +34,7 @@ aws:
     region: test
     access-key: test
     secret-key: test
+  sns:
+    access-key: test
+    secret-key: test
+    platform-application-arn: test

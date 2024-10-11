@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -15,8 +16,8 @@ public class UserCreator {
 
     private final UserRepository userRepository;
 
-    public Long createUser(String socialId, String name, String nickname, LocalDate birthday, Gender gender) {
-        User newUser = User.newInstance(socialId, name, nickname, birthday, gender);
+    public Long createUser(String socialId, String name, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
+        User newUser = User.newInstance(socialId, name, birthday, gender, dailyStartTime, dailyEndTime, snsArnEndpoint);
         userRepository.save(newUser);
 
         return newUser.getId();

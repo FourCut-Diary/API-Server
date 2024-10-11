@@ -2,6 +2,7 @@ package com.fourcut.diary.exception;
 
 import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.dto.ErrorResponse;
+import com.fourcut.diary.exception.model.FourCutDiaryException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,15 @@ public class ControllerExceptionHandler {
 
         log.error(exception.getMessage());
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(ErrorResponse.of(ErrorMessage.METHOD_NOT_ALLOWED));
+    }
+
+    /*
+    Fourcut-Diary CUSTOM ERROR
+     */
+    @ExceptionHandler(FourCutDiaryException.class)
+    public ResponseEntity<ErrorResponse> handleFourCutDiaryException(FourCutDiaryException exception) {
+
+        return ResponseEntity.status(exception.getErrorMessage().getStatus()).body(ErrorResponse.of(exception.getErrorMessage()));
     }
 
     /*

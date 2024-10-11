@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public record SignupRequest(
 
@@ -19,9 +20,6 @@ public record SignupRequest(
         @NotBlank(message = ValidationMessage.INVALID_FCM_TOKEN)
         String fcmToken,
 
-        @NotBlank(message = ValidationMessage.INVALID_USER_NAME)
-        String name,
-
         @NotBlank(message = ValidationMessage.INVALID_NICKNAME)
         String nickname,
 
@@ -29,6 +27,12 @@ public record SignupRequest(
         LocalDate birthday,
 
         @NotNull(message = ValidationMessage.NULL_GENDER)
-        Gender gender
+        Gender gender,
+
+        @NotNull(message = ValidationMessage.NULL_DAILY_START_TIME)
+        LocalTime dailyStartTime,
+
+        @NotNull(message = ValidationMessage.NULL_DAILY_END_TIME)
+        LocalTime dailyEndTime
 ) {
 }

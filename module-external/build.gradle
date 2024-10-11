@@ -9,6 +9,7 @@ jar {
 dependencies {
     implementation("software.amazon.awssdk:bom:2.21.0")
     implementation("software.amazon.awssdk:lambda:2.21.0")
+    implementation("software.amazon.awssdk:sns:2.21.0")
 
     implementation group: 'org.json', name: 'json', version: '20240303'
 }
