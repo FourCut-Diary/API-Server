@@ -36,7 +36,10 @@ public class User {
     @Column(nullable = false)
     private LocalTime dailyEndTime;
 
-    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime) {
+    @Column(nullable = false)
+    private String snsArnEndpoint;
+
+    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
         return User.builder()
                 .socialId(socialId)
                 .nickname(nickname)
@@ -44,6 +47,7 @@ public class User {
                 .gender(gender)
                 .dailyStartTime(dailyStartTime)
                 .dailyEndTime(dailyEndTime)
+                .snsArnEndpoint(snsArnEndpoint)
                 .build();
     }
 }

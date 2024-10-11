@@ -16,8 +16,8 @@ public class UserCreator {
 
     private final UserRepository userRepository;
 
-    public Long createUser(String socialId, String name, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime) {
-        User newUser = User.newInstance(socialId, name, birthday, gender, dailyStartTime, dailyEndTime);
+    public Long createUser(String socialId, String name, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
+        User newUser = User.newInstance(socialId, name, birthday, gender, dailyStartTime, dailyEndTime, snsArnEndpoint);
         userRepository.save(newUser);
 
         return newUser.getId();

@@ -16,4 +16,16 @@ public class EnvironmentVariableConfig {
 
     @Value("${aws.lambda.region}")
     private String lambdaRegion;
+
+    @Value("${aws.sns.access-key}")
+    private String snsAccessKey;
+
+    @Value("${aws.sns.secret-key}")
+    private String snsSecretKey;
+
+    @Value("${aws.sns.platform-application-arn}")
+    private String snsPlatformApplicationArn;
+
+    @Value("${aws.sns.token-arn}")
+    private String snsTokenArn;
 }

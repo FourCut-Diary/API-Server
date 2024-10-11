@@ -6,7 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
 
-public interface NotificationTimeRepository extends CrudRepository<NotificationTime, Long> {
+public interface NotificationTimeRepository extends CrudRepository<NotificationTime, Long>, NotificationTimeRepositoryCustom {
 
     // CREATE
 

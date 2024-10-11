@@ -8,11 +8,20 @@ import com.fourcut.diary.user.repository.notification.NotificationTimeRepository
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class NotificationTimeRetriever {
 
     private final NotificationTimeRepository notificationTimeRepository;
+
+    public List<String> findAllUserArnEndpointByCurrentTime(LocalDateTime currentTime) {
+
+        currentTime = currentTime.withSecond(0).withNano(0);
+        return notificationTimeRepository.findAllUserArnEndpointByCurrentTime(currentTime);
+    }
 
     public NotificationTime findNotificationTimeByUser(User user) {
 

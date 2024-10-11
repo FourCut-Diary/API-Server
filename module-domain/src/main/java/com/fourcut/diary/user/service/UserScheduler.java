@@ -1,5 +1,6 @@
 package com.fourcut.diary.user.service;
 
+import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.domain.notification.NotificationTime;
 import com.fourcut.diary.user.service.notification.NotificationTimeRetriever;
@@ -25,41 +26,46 @@ public class UserScheduler {
     private final NotificationTimeRetriever notificationTimeRetriever;
     private final NotificationTimeUpdater notificationTimeUpdater;
 
-    /*
-    사용자가 설정한 활동 시간이 종료되면 다음 날의 푸시알림 시간이 설정됩니다.
-     */
+    private final SnsService snsService;
+
     @Scheduled(cron = "0 * * * * ?")
     @Transactional
-    public void setUserDailyPushNotificationTime() {
+    public void userPushNotificationScheduler() {
 
-        List<User> users = userRetriever.getUserIdListWithExpiredDailyEndTime(LocalTime.now());
-        if (!users.isEmpty()) {
-            for (User user : users) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDateTime currentTime = LocalDateTime.now();
 
-                // 오늘 날짜
-                LocalDate currentDate = LocalDate.now();
+        // 1. 활동 시간이 종료된 사용자에 대한 처리
+        List<User> expiredUsers = userRetriever.getUserIdListWithExpiredDailyEndTime(LocalTime.now());
+        expiredUsers.forEach(user -> handleExpiredUser(user, currentDate));
 
-                LocalDateTime startTimeWithDate;
-                LocalDateTime endTimeWithDate;
-
-                // dailyEndTime 이 자정을 넘은 경우
-                if (user.getDailyStartTime().isAfter(user.getDailyEndTime())) {
-                    startTimeWithDate = LocalDateTime.of(currentDate, user.getDailyStartTime());
-                    endTimeWithDate = LocalDateTime.of(currentDate.plusDays(1), user.getDailyEndTime());
-                } else { // 자정을 넘지 않은 경우
-                    startTimeWithDate = LocalDateTime.of(currentDate, user.getDailyStartTime());
-                    endTimeWithDate = LocalDateTime.of(currentDate, user.getDailyEndTime());
-                }
-
-                List<LocalDateTime> randomPushNotificationTime = LocalDateTimeUtil.generateRandomDateTimes(
-                        startTimeWithDate,
-                        endTimeWithDate,
-                        Duration.ofHours(2)
-                );
-
-                NotificationTime notificationTime = notificationTimeRetriever.findNotificationTimeByUser(user);
-                notificationTimeUpdater.setUserDailyNotificationTime(notificationTime, randomPushNotificationTime);
-            }
+        // 2. 현재 시간이 푸시 알림 시간인 사용자들에게 알림 발송
+        List<String> userArnEndpointList = notificationTimeRetriever.findAllUserArnEndpointByCurrentTime(currentTime);
+        for (String userArnEndpoint : userArnEndpointList) {
+            snsService.topicPublish(userArnEndpoint);
         }
+    }
+
+    private void handleExpiredUser(User user, LocalDate currentDate) {
+        LocalDateTime startTime = calculateStartTime(user, currentDate);
+        LocalDateTime endTime = calculateEndTime(user, currentDate);
+
+        List<LocalDateTime> randomPushTimes = LocalDateTimeUtil.generateRandomDateTimes(
+                startTime, endTime, Duration.ofHours(2)
+        );
+
+        NotificationTime notificationTime = notificationTimeRetriever.findNotificationTimeByUser(user);
+        notificationTimeUpdater.setUserDailyNotificationTime(notificationTime, randomPushTimes);
+    }
+
+    private LocalDateTime calculateStartTime(User user, LocalDate currentDate) {
+        return LocalDateTime.of(currentDate, user.getDailyStartTime());
+    }
+
+    private LocalDateTime calculateEndTime(User user, LocalDate currentDate) {
+        if (user.getDailyStartTime().isAfter(user.getDailyEndTime())) {
+            return LocalDateTime.of(currentDate.plusDays(1), user.getDailyEndTime());
+        }
+        return LocalDateTime.of(currentDate, user.getDailyEndTime());
     }
 }
