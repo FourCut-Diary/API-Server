@@ -1,6 +1,6 @@
 package com.fourcut.diary.user.facade;
 
-import com.fourcut.diary.aws.LambdaService;
+import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.SocialStrategyProvider;
@@ -22,20 +22,30 @@ public class AuthFacade {
 
     private final UserService userService;
 
-    private final LambdaService lambdaService;
+    private final SnsService snsService;
 
     public SignupResponse signup(SignupRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
 
-        Long id = userService.createUser(socialLoginResponse.socialId(), request.name(), request.nickname(), request.birthday(), request.gender());
-        lambdaService.enrollFcmTokenInSNS(request.fcmToken());
+        String snsArnEndpoint = snsService.createEndpoint(request.fcmToken());
+        String endpoint = snsArnEndpoint.split("/")[3];
+        Long id = userService.createUser(
+                socialLoginResponse.socialId(),
+                request.nickname(),
+                request.birthday(),
+                request.gender(),
+                request.dailyStartTime(),
+                request.dailyEndTime(),
+                endpoint
+        );
+
         return new SignupResponse(id, "accessToken", "refreshToken");
     }
 
     public LoginResponse login(LoginRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
 
-        return new LoginResponse(userService.getUser(socialLoginResponse.socialId()), "accessToken", "refreshToken");
+        return new LoginResponse(userService.getUserId(socialLoginResponse.socialId()), "accessToken", "refreshToken");
     }
 
     private SocialLoginResponse getSocialInfo(SocialType socialType, String authorizationCode) {

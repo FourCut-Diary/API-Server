@@ -8,15 +8,14 @@ import com.fourcut.diary.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalTime;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class UserRetriever {
 
     private final UserRepository userRepository;
-
-    public boolean isExistingUser(String socialId) {
-        return userRepository.existsBySocialId(socialId);
-    }
 
     public void checkAlreadyExistedUser(String socialId) {
         if (userRepository.existsBySocialId(socialId)) {
@@ -27,5 +26,10 @@ public class UserRetriever {
     public User getUserBySocialId(String socialId) {
         return userRepository.findBySocialId(socialId)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER));
+    }
+
+    public List<User> getUserIdListWithExpiredDailyEndTime(LocalTime currentTime) {
+
+        return userRepository.findAllUserWithExpiredDailyEndTime(currentTime);
     }
 }
