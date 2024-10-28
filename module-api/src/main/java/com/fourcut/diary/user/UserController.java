@@ -6,14 +6,12 @@ import com.fourcut.diary.user.dto.response.LoginResponse;
 import com.fourcut.diary.user.dto.response.SignupResponse;
 import com.fourcut.diary.user.dto.response.UserProfileResponse;
 import com.fourcut.diary.user.facade.AuthFacade;
+import com.fourcut.diary.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController implements UserControllerSwagger {
 
     private final AuthFacade authFacade;
+    private final UserService userService;
 
     @PostMapping("/social-signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody @Valid final SignupRequest request) {
@@ -35,7 +34,8 @@ public class UserController implements UserControllerSwagger {
     }
 
     @Override
-    public ResponseEntity<UserProfileResponse> getUserProfile(Long userId) {
-        return null;
+    public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable(name = "userId") final Long userId) {
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfileInfo(userId));
     }
 }
