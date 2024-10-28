@@ -28,6 +28,11 @@ public class UserRetriever {
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER));
     }
 
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_USER));
+    }
+
     public List<User> getUserIdListWithExpiredDailyEndTime(LocalTime currentTime) {
 
         return userRepository.findAllUserWithExpiredDailyEndTime(currentTime);

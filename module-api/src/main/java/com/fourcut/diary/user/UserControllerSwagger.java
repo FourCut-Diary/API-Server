@@ -4,7 +4,7 @@ import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
 import com.fourcut.diary.user.dto.response.SignupResponse;
-import com.fourcut.diary.user.dto.response.UserProfileResponse;
+import com.fourcut.diary.user.service.dto.UserProfileResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

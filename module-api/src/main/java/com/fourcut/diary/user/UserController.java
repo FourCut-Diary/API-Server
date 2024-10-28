@@ -4,9 +4,9 @@ import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
 import com.fourcut.diary.user.dto.response.SignupResponse;
-import com.fourcut.diary.user.dto.response.UserProfileResponse;
 import com.fourcut.diary.user.facade.AuthFacade;
 import com.fourcut.diary.user.service.UserService;
+import com.fourcut.diary.user.service.dto.UserProfileResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,9 +33,9 @@ public class UserController implements UserControllerSwagger {
         return ResponseEntity.status(HttpStatus.OK).body(authFacade.login(request));
     }
 
-    @Override
+    @GetMapping("/profile/{userId}")
     public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable(name = "userId") final Long userId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfileInfo(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfileInfoById(userId));
     }
 }
