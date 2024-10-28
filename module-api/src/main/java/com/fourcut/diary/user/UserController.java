@@ -4,6 +4,7 @@ import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
 import com.fourcut.diary.user.dto.response.SignupResponse;
+import com.fourcut.diary.user.dto.response.UserProfileResponse;
 import com.fourcut.diary.user.facade.AuthFacade;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,5 +32,10 @@ public class UserController implements UserControllerSwagger {
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid final LoginRequest request) {
 
         return ResponseEntity.status(HttpStatus.OK).body(authFacade.login(request));
+    }
+
+    @Override
+    public ResponseEntity<UserProfileResponse> getUserProfile(Long userId) {
+        return null;
     }
 }
