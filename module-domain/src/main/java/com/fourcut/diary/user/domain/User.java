@@ -43,6 +43,10 @@ public class User extends AuditingTimeEntity {
     @Column(nullable = false)
     private String snsArnEndpoint;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
+
     public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
         return User.builder()
                 .socialId(socialId)
@@ -52,6 +56,7 @@ public class User extends AuditingTimeEntity {
                 .dailyStartTime(dailyStartTime)
                 .dailyEndTime(dailyEndTime)
                 .snsArnEndpoint(snsArnEndpoint)
+                .role(RoleType.USER)
                 .build();
     }
 }

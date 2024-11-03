@@ -16,6 +16,13 @@ spring:
         use_sql_comments: true
 
 # auth
+jwt:
+  secret: test
+  access-token:
+    expiration-time: test
+  refresh-token:
+    expiration-time: test
+
 kakao:
   clientId: test
   redirectUri: test

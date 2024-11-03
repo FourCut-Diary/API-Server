@@ -27,15 +27,15 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Long getUserId(String socialId) {
+    public User getUserBySocialId(String socialId) {
 
-        return userRetriever.getUserBySocialId(socialId).getId();
+        return userRetriever.getUserBySocialId(socialId);
     }
 
     @Transactional(readOnly = true)
-    public UserProfileResponse getUserProfileInfoById(Long userId) {
+    public UserProfileResponse getUserProfileInfoBySocialId(String socialId) {
 
-        User user = userRetriever.getUserById(userId);
+        User user = userRetriever.getUserBySocialId(socialId);
         long daysAfterRegistration = ChronoUnit.DAYS.between(user.getCreatedAt(), LocalDateTime.now()) + 1;
         return new UserProfileResponse(user.getId(), "image", user.getNickname(), daysAfterRegistration);
     }
