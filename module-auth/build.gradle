@@ -12,6 +12,7 @@ ext {
 
 dependencies {
 
+    implementation project(':module-domain')
     implementation project(':module-common')
 
     // Spring security

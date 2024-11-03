@@ -1,5 +1,6 @@
 package com.fourcut.diary.user;
 
+import com.fourcut.diary.config.resolver.UserAuthentication;
 import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
@@ -33,9 +34,9 @@ public class UserController implements UserControllerSwagger {
         return ResponseEntity.status(HttpStatus.OK).body(authFacade.login(request));
     }
 
-    @GetMapping("/profile/{userId}")
-    public ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable(name = "userId") final Long userId) {
+    @GetMapping("/profile")
+    public ResponseEntity<UserProfileResponse> getUserProfile(@UserAuthentication String socialId) {
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfileInfoById(userId));
+        return ResponseEntity.status(HttpStatus.OK).body(userService.getUserProfileInfoBySocialId(socialId));
     }
 }

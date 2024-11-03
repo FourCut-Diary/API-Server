@@ -1,5 +1,6 @@
 package com.fourcut.diary.user;
 
+import com.fourcut.diary.config.resolver.UserAuthentication;
 import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "User", description = "사용자 관련 API 명세서")
@@ -22,5 +22,5 @@ public interface UserControllerSwagger {
     ResponseEntity<LoginResponse> login(@RequestBody @Valid final LoginRequest request);
 
     @Operation(summary = "유저 프로필 정보 조회")
-    ResponseEntity<UserProfileResponse> getUserProfile(@PathVariable(name = "userId") final Long userId);
+    ResponseEntity<UserProfileResponse> getUserProfile(@UserAuthentication String socialId);
 }
