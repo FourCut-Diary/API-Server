@@ -1,11 +1,15 @@
 package com.fourcut.diary.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.dto.ErrorResponse;
 import com.fourcut.diary.filter.CustomJwtAuthenticationFilter;
 import com.fourcut.diary.filter.JwtExceptionHandlerFilter;
 import com.fourcut.diary.jwt.JwtTokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
@@ -47,6 +51,15 @@ public class SecurityConfig {
         http
                 .addFilterBefore(new CustomJwtAuthenticationFilter(jwtTokenManager), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new JwtExceptionHandlerFilter(), CustomJwtAuthenticationFilter.class);
+
+        http.exceptionHandling(exception -> {
+            exception.authenticationEntryPoint(((request, response, authException) -> {
+                ErrorResponse errorResponse = new ErrorResponse(HttpStatus.NOT_FOUND.value(), ErrorMessage.NOT_FOUND_PATH.getMessage());
+                response.setContentType("application/json; charset=UTF-8");
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.getWriter().write(new ObjectMapper().writeValueAsString(errorResponse));
+            }));
+        });
 
         return http.build();
     }
