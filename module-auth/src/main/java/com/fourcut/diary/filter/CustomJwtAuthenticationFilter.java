@@ -13,12 +13,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
 public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenManager jwtTokenManager;
+    private static final List<String> AUTH_WHITELIST = List.of(
+            "/user/social-signup",
+            "/user/social-login"
+    );
 
     @Override
     protected void doFilterInternal(
@@ -27,9 +32,16 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI();
+
+        if (AUTH_WHITELIST.contains(requestURI)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String accessToken = resolveAccessToken(request);
 
-        if (accessToken != null && jwtTokenManager.validateToken(accessToken)) {
+        if (jwtTokenManager.validateToken(accessToken)) {
             Authentication authentication = jwtTokenManager.getAuthentication(accessToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

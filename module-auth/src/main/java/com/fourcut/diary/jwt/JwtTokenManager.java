@@ -1,6 +1,7 @@
 package com.fourcut.diary.jwt;
 
 import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.exception.model.UnauthorizedException;
 import com.fourcut.diary.filter.CustomUserDetailsService;
 import com.fourcut.diary.user.domain.RoleType;
 import io.jsonwebtoken.*;
@@ -87,7 +88,7 @@ public class JwtTokenManager {
         try {
 
             if (token == null || token.isBlank()) {
-                throw new IllegalArgumentException(ErrorMessage.INVALID_JWT_TOKEN.getMessage());
+                throw new UnauthorizedException(ErrorMessage.INVALID_JWT_TOKEN);
             }
             Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -95,20 +96,18 @@ public class JwtTokenManager {
                     .parseClaimsJws(token);
             return true;
         } catch (ExpiredJwtException e) {
-            throw new ExpiredJwtException(e.getHeader(), e.getClaims(), ErrorMessage.EXPIRED_TOKEN.getMessage(), e);
+            throw new UnauthorizedException(ErrorMessage.EXPIRED_TOKEN);
         } catch (MalformedJwtException e) {
-            throw new MalformedJwtException(ErrorMessage.MALFORMED_TOKEN.getMessage(), e);
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(ErrorMessage.INVALID_JWT_TOKEN.getMessage(), e);
-        } catch (JwtException e) {
-            throw new JwtException(ErrorMessage.INVALID_JWT_TOKEN.getMessage(), e);
+            throw new UnauthorizedException(ErrorMessage.MALFORMED_TOKEN);
+        } catch (IllegalArgumentException | JwtException e) {
+            throw new UnauthorizedException(ErrorMessage.INVALID_JWT_TOKEN);
         }
     }
 
     private String generateToken(String socialId, String authorities, String tokenType, Long expiration) {
 
         long now = (new Date()).getTime();
-        Date expirationDate = new Date(now + expiration * 1000);
+        Date expirationDate = new Date(now + expiration);
 
         return Jwts.builder()
                 .setSubject(socialId)
