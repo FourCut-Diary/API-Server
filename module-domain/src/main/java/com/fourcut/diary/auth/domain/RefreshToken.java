@@ -22,7 +22,7 @@ public class RefreshToken {
 
     public RefreshToken(
             String refreshToken,
-            @Value("${jwt.refresh-token.expiration-time}") Long refreshTokenExpiration
+            Long refreshTokenExpiration
     ) {
         this.refreshToken = refreshToken;
         this.expiration = refreshTokenExpiration;
