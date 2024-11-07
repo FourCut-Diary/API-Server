@@ -2,12 +2,11 @@ package com.fourcut.diary.auth.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
-@RedisHash("RedisToken")
+@RedisHash("RefreshToken")
 @AllArgsConstructor
 @Getter
 public class RefreshToken {
