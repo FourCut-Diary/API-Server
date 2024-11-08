@@ -1,4 +1,4 @@
-package com.fourcut.diary.auth.domain;
+package com.fourcut.diary.auth.domain.token;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

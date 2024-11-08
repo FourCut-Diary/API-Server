@@ -1,7 +1,7 @@
-package com.fourcut.diary.auth.service;
+package com.fourcut.diary.auth.service.token;
 
-import com.fourcut.diary.auth.domain.RefreshToken;
-import com.fourcut.diary.auth.repository.RefreshTokenRepository;
+import com.fourcut.diary.auth.domain.token.RefreshToken;
+import com.fourcut.diary.auth.repository.token.RefreshTokenRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

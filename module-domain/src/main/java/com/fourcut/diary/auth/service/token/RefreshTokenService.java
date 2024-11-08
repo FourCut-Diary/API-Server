@@ -1,4 +1,4 @@
-package com.fourcut.diary.auth.service;
+package com.fourcut.diary.auth.service.token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

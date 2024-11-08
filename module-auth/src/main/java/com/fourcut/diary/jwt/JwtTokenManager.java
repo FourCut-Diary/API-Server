@@ -1,7 +1,6 @@
 package com.fourcut.diary.jwt;
 
-import com.fourcut.diary.auth.domain.RefreshToken;
-import com.fourcut.diary.auth.service.RefreshTokenService;
+import com.fourcut.diary.auth.service.token.RefreshTokenService;
 import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.exception.model.UnauthorizedException;
 import com.fourcut.diary.filter.CustomUserDetailsService;
