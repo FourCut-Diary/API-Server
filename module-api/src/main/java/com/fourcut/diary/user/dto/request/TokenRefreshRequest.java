@@ -1,4 +1,4 @@
-package com.fourcut.diary.auth.dto.request;
+package com.fourcut.diary.user.dto.request;
 
 import com.fourcut.diary.constant.ValidationMessage;
 import jakarta.validation.constraints.NotBlank;

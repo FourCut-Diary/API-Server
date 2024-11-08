@@ -112,7 +112,7 @@ public class JwtTokenManager {
     private String generateToken(String socialId, String authorities, String tokenType, Long expiration) {
 
         long now = (new Date()).getTime();
-        Date expirationDate = new Date(now + expiration);
+        Date expirationDate = new Date(now + expiration * 1000);
 
         return Jwts.builder()
                 .setSubject(socialId)

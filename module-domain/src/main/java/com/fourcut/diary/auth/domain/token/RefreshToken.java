@@ -1,14 +1,15 @@
 package com.fourcut.diary.auth.domain.token;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
 
 @RedisHash("refreshToken")
-@AllArgsConstructor
 @Getter
+@Builder
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class RefreshToken {
 
     @Id
@@ -19,11 +20,18 @@ public class RefreshToken {
     @TimeToLive
     private Long expiration;
 
-    public RefreshToken(
-            String refreshToken,
-            Long refreshTokenExpiration
-    ) {
-        this.refreshToken = refreshToken;
-        this.expiration = refreshTokenExpiration;
+    public static RefreshToken newInstance(Long id, String refreshToken, Long expiration) {
+        return RefreshToken.builder()
+                .id(id)
+                .refreshToken(refreshToken)
+                .expiration(expiration)
+                .build();
+    }
+
+    public static RefreshToken newInstance(String refreshToken, Long expiration) {
+        return RefreshToken.builder()
+                .refreshToken(refreshToken)
+                .expiration(expiration)
+                .build();
     }
 }

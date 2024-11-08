@@ -1,4 +1,4 @@
-package com.fourcut.diary.auth.dto.response;
+package com.fourcut.diary.user.dto.response;
 
 public record TokenRefreshResponse(
 
