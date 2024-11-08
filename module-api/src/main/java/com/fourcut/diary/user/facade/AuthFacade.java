@@ -1,5 +1,6 @@
 package com.fourcut.diary.user.facade;
 
+import com.fourcut.diary.auth.service.AuthService;
 import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
 import com.fourcut.diary.jwt.JwtToken;
@@ -10,8 +11,10 @@ import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.dto.request.LoginRequest;
 import com.fourcut.diary.user.dto.request.SignupRequest;
+import com.fourcut.diary.user.dto.request.TokenRefreshRequest;
 import com.fourcut.diary.user.dto.response.LoginResponse;
 import com.fourcut.diary.user.dto.response.SignupResponse;
+import com.fourcut.diary.user.dto.response.TokenRefreshResponse;
 import com.fourcut.diary.user.service.UserService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +27,7 @@ public class AuthFacade {
     private final JwtTokenManager jwtTokenManager;
     private final SocialStrategyProvider socialStrategyProvider;
 
+    private final AuthService authService;
     private final UserService userService;
 
     private final SnsService snsService;
@@ -54,6 +58,13 @@ public class AuthFacade {
         JwtToken jwtToken = getJwtToken(loginUser.getSocialId());
 
         return new LoginResponse(loginUser.getId(), jwtToken.accessToken(), jwtToken.refreshToken());
+    }
+
+    public TokenRefreshResponse refreshToken(String socialId, TokenRefreshRequest request) {
+        authService.deleteSavedToken(socialId, request.refreshToken());
+        JwtToken jwtToken = getJwtToken(socialId);
+
+        return new TokenRefreshResponse(jwtToken.accessToken(), jwtToken.refreshToken());
     }
 
     private SocialLoginResponse getSocialInfo(SocialType socialType, String authorizationCode) {

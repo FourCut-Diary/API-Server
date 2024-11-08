@@ -1,5 +1,6 @@
 package com.fourcut.diary.jwt;
 
+import com.fourcut.diary.auth.service.AuthService;
 import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.exception.model.UnauthorizedException;
 import com.fourcut.diary.filter.CustomUserDetailsService;
@@ -36,18 +37,21 @@ public class JwtTokenManager {
     private static final String REFRESH_TOKEN_TYPE = "refresh";
 
     private final CustomUserDetailsService userDetailsService;
+    private final AuthService authService;
 
     public JwtTokenManager(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.access-token.expiration-time}") long accessTokenExpTime,
             @Value("${jwt.refresh-token.expiration-time}") long refreshTokenExpTime,
-            CustomUserDetailsService userDetailsService
+            CustomUserDetailsService userDetailsService,
+            AuthService authService
     ) {
         this.accessTokenExpTime = accessTokenExpTime;
         this.refreshTokenExpTime = refreshTokenExpTime;
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
         this.userDetailsService = userDetailsService;
+        this.authService = authService;
     }
 
     public JwtToken getUserJwtToken(String principle) {
@@ -79,6 +83,7 @@ public class JwtTokenManager {
 
         String accessToken = generateToken(authentication.getName(), authorities, ACCESS_TOKEN_TYPE, accessTokenExpTime);
         String refreshToken = generateToken(authentication.getName(), authorities, REFRESH_TOKEN_TYPE, refreshTokenExpTime);
+        authService.createRefreshToken(refreshToken, refreshTokenExpTime);
 
         return new JwtToken(accessToken, refreshToken);
     }
@@ -107,7 +112,7 @@ public class JwtTokenManager {
     private String generateToken(String socialId, String authorities, String tokenType, Long expiration) {
 
         long now = (new Date()).getTime();
-        Date expirationDate = new Date(now + expiration);
+        Date expirationDate = new Date(now + expiration * 1000);
 
         return Jwts.builder()
                 .setSubject(socialId)

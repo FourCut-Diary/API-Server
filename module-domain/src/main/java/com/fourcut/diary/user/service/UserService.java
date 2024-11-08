@@ -2,7 +2,7 @@ package com.fourcut.diary.user.service;
 
 import com.fourcut.diary.user.domain.Gender;
 import com.fourcut.diary.user.domain.User;
-import com.fourcut.diary.user.service.dto.UserProfileResponse;
+import com.fourcut.diary.user.service.dto.UserProfileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,10 +33,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserProfileResponse getUserProfileInfoBySocialId(String socialId) {
+    public UserProfileDto getUserProfileInfoBySocialId(String socialId) {
 
         User user = userRetriever.getUserBySocialId(socialId);
         long daysAfterRegistration = ChronoUnit.DAYS.between(user.getCreatedAt(), LocalDateTime.now()) + 1;
-        return new UserProfileResponse(user.getId(), "image", user.getNickname(), daysAfterRegistration);
+        return new UserProfileDto(user.getId(), "image", user.getNickname(), daysAfterRegistration);
     }
 }
