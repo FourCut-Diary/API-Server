@@ -15,8 +15,15 @@ public enum ErrorMessage {
     // common
     INVALID_METHOD_ARGUMENT(HttpStatus.BAD_REQUEST.value(), "API 요청에 필요한 인자가 누락되었습니다."),
     HTTP_MESSAGE_NOT_READABLE(HttpStatus.BAD_REQUEST.value(), "request body 가 존재하지 않습니다."),
+    NOT_FOUND_PATH(HttpStatus.NOT_FOUND.value(), "해당 경로를 찾을 수 없습니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED.value(), "허용되지 않은 http method 입니다."),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR.value(), "알 수 없는 서버 에러입니다."),
+
+    // auth
+    INVALID_JWT_TOKEN(HttpStatus.UNAUTHORIZED.value(), "허용되지 않은 토큰입니다."),
+    EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "만료된 토큰입니다."),
+    MALFORMED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "형식이 올바르지 않은 토큰입니다."),
+    UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED.value(), "지원되지 않는 형식의 토큰입니다."),
 
     // user
     ALREADY_ENROLL_USER(HttpStatus.CONFLICT.value(), "이미 등록된 사용자입니다."),
