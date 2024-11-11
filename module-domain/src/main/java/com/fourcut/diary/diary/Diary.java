@@ -1,6 +1,7 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.common.AuditingTimeEntity;
+import com.fourcut.diary.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,4 +48,7 @@ public class Diary extends AuditingTimeEntity {
     @Column
     private String fourthComment;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
