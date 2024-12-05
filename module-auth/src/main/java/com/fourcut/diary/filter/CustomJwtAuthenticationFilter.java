@@ -22,7 +22,8 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenManager jwtTokenManager;
     private static final List<String> AUTH_WHITELIST = List.of(
             "/user/social-signup",
-            "/user/social-login"
+            "/user/social-login",
+            "/secret/info/health"
     );
 
     @Override
