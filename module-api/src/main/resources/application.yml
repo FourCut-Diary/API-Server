@@ -29,16 +29,16 @@ jwt:
 
 management:
   server:
-    port: 8120
+    port: 0000
   endpoints:
     enabled-by-default: false
     jmx:
       exposure:
-        exclude: []
+        exclude: test
     web:
       exposure:
-        include: health
-      base-path: /secret/info
+        include: test
+      base-path: /test
   endpoint:
     health:
       enabled: true
