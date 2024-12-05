@@ -15,7 +15,7 @@ jobs:
   ci-workflow:
     runs-on: ubuntu-latest
     env:
-      working-directory: ./app
+      working-directory: ./
 
     steps:
     
@@ -74,6 +74,5 @@ jobs:
         username: ${{ secrets.RELEASE_SERVER_USER }}
         key: ${{ secrets.RELEASE_SERVER_KEY }}
         script: |
-          docker rm -f fourcutdiary
-          docker image pull lsh328328/fourcutdiary
-          docker run -d --name fourcutdiary-8080 -p 8080:8080 lsh328328/fourcutdiary
+          cd ~
+          ./deploy.sh
