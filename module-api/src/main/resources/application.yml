@@ -28,8 +28,6 @@ jwt:
     expiration-time: test
 
 management:
-  server:
-    port: 0000
   endpoints:
     enabled-by-default: false
     jmx:
