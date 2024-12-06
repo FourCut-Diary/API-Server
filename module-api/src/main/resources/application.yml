@@ -27,6 +27,22 @@ jwt:
   refresh-token:
     expiration-time: test
 
+management:
+  server:
+    port: 0000
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: test
+    web:
+      exposure:
+        include: test
+      base-path: /test
+  endpoint:
+    health:
+      enabled: true
+
 kakao:
   clientId: test
   redirectUri: test
