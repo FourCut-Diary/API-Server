@@ -28,4 +28,16 @@ public class EnvironmentVariableConfig {
 
     @Value("${aws.sns.token-arn}")
     private String snsTokenArn;
+
+    @Value("${aws.s3.credentials.access-key}")
+    private String s3AccessKey;
+
+    @Value("${aws.s3.credentials.secret-key}")
+    private String s3SecretKey;
+
+    @Value("${aws.s3.bucket}")
+    private String s3Bucket;
+
+    @Value("${aws.s3.region.static}")
+    private String s3Region;
 }
