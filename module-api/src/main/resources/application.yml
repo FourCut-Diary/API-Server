@@ -63,3 +63,12 @@ aws:
     access-key: test
     secret-key: test
     platform-application-arn: test
+  s3:
+    credentials:
+      access-key: test
+      secret-key: test
+    bucket: test
+    region:
+      static: test
+    stack:
+      auto: false
