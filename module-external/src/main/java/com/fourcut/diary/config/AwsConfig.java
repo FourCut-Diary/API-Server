@@ -15,16 +15,16 @@ public class AwsConfig {
     private final EnvironmentVariableConfig environmentVariableConfig;
 
     @Bean
-    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForLambda() {
-        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getLambdaAccessKey());
-        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getLambdaSecretKey());
+    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForSNS() {
+        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getSnsAccessKey());
+        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getSnsSecretKey());
         return SystemPropertyCredentialsProvider.create();
     }
 
     @Bean
-    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForSNS() {
-        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getSnsAccessKey());
-        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getSnsSecretKey());
+    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForS3() {
+        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getS3AccessKey());
+        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getS3SecretKey());
         return SystemPropertyCredentialsProvider.create();
     }
 
@@ -36,5 +36,10 @@ public class AwsConfig {
     @Bean
     public String getSnsTokenArn() {
         return environmentVariableConfig.getSnsTokenArn();
+    }
+
+    @Bean
+    public String getS3BucketName() {
+        return environmentVariableConfig.getS3Bucket();
     }
 }

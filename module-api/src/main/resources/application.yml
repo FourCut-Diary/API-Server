@@ -55,11 +55,12 @@ apple:
 
 # external
 aws:
-  lambda:
-    region: test
-    access-key: test
-    secret-key: test
   sns:
     access-key: test
     secret-key: test
     platform-application-arn: test
+  s3:
+    credentials:
+      access-key: test
+      secret-key: test
+    bucket: test
