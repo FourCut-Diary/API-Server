@@ -8,15 +8,6 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnvironmentVariableConfig {
 
-    @Value("${aws.lambda.access-key}")
-    private String lambdaAccessKey;
-
-    @Value("${aws.lambda.secret-key}")
-    private String lambdaSecretKey;
-
-    @Value("${aws.lambda.region}")
-    private String lambdaRegion;
-
     @Value("${aws.sns.access-key}")
     private String snsAccessKey;
 
@@ -37,7 +28,4 @@ public class EnvironmentVariableConfig {
 
     @Value("${aws.s3.bucket}")
     private String s3Bucket;
-
-    @Value("${aws.s3.region.static}")
-    private String s3Region;
 }

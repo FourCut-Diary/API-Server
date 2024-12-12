@@ -55,10 +55,6 @@ apple:
 
 # external
 aws:
-  lambda:
-    region: test
-    access-key: test
-    secret-key: test
   sns:
     access-key: test
     secret-key: test
@@ -68,7 +64,3 @@ aws:
       access-key: test
       secret-key: test
     bucket: test
-    region:
-      static: test
-    stack:
-      auto: false
