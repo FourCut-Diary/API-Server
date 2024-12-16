@@ -31,6 +31,11 @@ public class LocalDateTimeUtil {
         return dateTimes;
     }
 
+    public static Boolean getIsPossiblePhotoCapture(LocalDateTime beginningTime, LocalDateTime now) {
+        LocalDateTime expirationTime = beginningTime.plusMinutes(20);
+        return !now.isBefore(beginningTime) && !now.isAfter(expirationTime);
+    }
+
     private static boolean isValidDateTime(LocalDateTime newDateTime, List<LocalDateTime> existingDateTimes, Duration minInterval) {
         for (LocalDateTime dateTime : existingDateTimes) {
             if (Duration.between(dateTime, newDateTime).abs().compareTo(minInterval) < 0) {
