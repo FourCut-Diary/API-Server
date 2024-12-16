@@ -4,10 +4,8 @@ import java.time.LocalTime;
 
 public record TakePhotoInfoDto(
 
-        Boolean isPossiblePhotoCapture,
+        Integer currentPhotoIndex,
 
-        LocalTime photoCaptureExpiration,
-
-        Integer photoNumber
+        LocalTime photoCaptureExpiration
 ) {
 }
