@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-public class NotificationTimeUpdater {
+public class NotificationTimeModifier {
 
     public void setUserDailyNotificationTime(NotificationTime notificationTime, List<LocalDateTime> randomTimes) {
 

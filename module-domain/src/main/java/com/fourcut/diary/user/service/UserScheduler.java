@@ -4,7 +4,7 @@ import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.domain.notification.NotificationTime;
 import com.fourcut.diary.user.service.notification.NotificationTimeRetriever;
-import com.fourcut.diary.user.service.notification.NotificationTimeUpdater;
+import com.fourcut.diary.user.service.notification.NotificationTimeModifier;
 import com.fourcut.diary.util.LocalDateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,7 +24,7 @@ public class UserScheduler {
     private final UserRetriever userRetriever;
 
     private final NotificationTimeRetriever notificationTimeRetriever;
-    private final NotificationTimeUpdater notificationTimeUpdater;
+    private final NotificationTimeModifier notificationTimeUpdater;
 
     private final SnsService snsService;
 
