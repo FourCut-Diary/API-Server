@@ -2,15 +2,19 @@ package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
 import com.fourcut.diary.diary.dto.DiaryDetailResponse;
+import com.fourcut.diary.diary.dto.PhotoCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.TodayDiaryResponse;
 import com.fourcut.diary.diary.mapper.DiaryResponseMapper;
 import com.fourcut.diary.diary.service.DiaryService;
+import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/diary")
@@ -28,8 +32,17 @@ public class DiaryController implements DiaryControllerSwagger {
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<DiaryDetailResponse> getDiary(String socialId, String date) {
+    public ResponseEntity<DiaryDetailResponse> getDiary(@UserAuthentication String socialId, String date) {
 
-        return null;
+        return ResponseEntity.status(HttpStatus.OK).body(
+                diaryResponseMapper.toDiaryDetailResponse(diaryService.getDiary(socialId, LocalDate.parse(date)))
+        );
+    }
+
+    @GetMapping("/photo")
+    public ResponseEntity<PhotoCaptureInfoResponse> getTakePhotoInfo(@UserAuthentication String socialId) {
+
+        PhotoCaptureInfoDto photoCaptureInfoDto = diaryService.getTakePhotoInfoByUser(socialId);
+        return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toPhotoCaptureInfoResponse(photoCaptureInfoDto));
     }
 }

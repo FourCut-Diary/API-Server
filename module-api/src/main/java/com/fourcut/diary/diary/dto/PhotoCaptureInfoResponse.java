@@ -1,4 +1,4 @@
-package com.fourcut.diary.user.dto.response;
+package com.fourcut.diary.diary.dto;
 
 import java.time.LocalTime;
 

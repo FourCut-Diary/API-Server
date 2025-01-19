@@ -1,7 +1,7 @@
 package com.fourcut.diary.diary.dto;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 public record DiaryDetailResponse(
 
@@ -23,12 +23,12 @@ public record DiaryDetailResponse(
 
         String fourthComment,
 
-        LocalTime firstTimeSlot,
+        LocalDateTime firstTimeSlot,
 
-        LocalTime secondTimeSlot,
+        LocalDateTime secondTimeSlot,
 
-        LocalTime thirdTimeSlot,
+        LocalDateTime thirdTimeSlot,
 
-        LocalTime fourthTimeSlot
+        LocalDateTime fourthTimeSlot
 ) {
 }
