@@ -4,6 +4,7 @@ import com.fourcut.diary.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -21,6 +22,9 @@ public class NotificationTime {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Column(nullable = false)
+    private LocalDate date;
 
     @Column(nullable = false)
     private LocalDateTime firstTimeSlot;

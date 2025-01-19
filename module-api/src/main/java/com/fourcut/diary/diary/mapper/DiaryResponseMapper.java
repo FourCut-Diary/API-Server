@@ -1,7 +1,10 @@
 package com.fourcut.diary.diary.mapper;
 
 import com.fourcut.diary.diary.domain.Diary;
+import com.fourcut.diary.diary.dto.DiaryDetailResponse;
+import com.fourcut.diary.diary.dto.PhotoCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.TodayDiaryResponse;
+import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +22,24 @@ public class DiaryResponseMapper {
                 diary.getSecondComment(),
                 diary.getThirdComment(),
                 diary.getFourthComment()
+        );
+    }
+
+    public DiaryDetailResponse toDiaryDetailResponse(Diary diary) {
+        return new DiaryDetailResponse(
+                diary.getDate(),
+                diary.getFirstPicture(),diary.getSecondPicture(), diary.getThirdPicture(), diary.getFourthPicture(),
+                diary.getFirstComment(), diary.getSecondComment(), diary.getThirdComment(), diary.getFourthComment(),
+                diary.getFirstTimeSlot(), diary.getSecondTimeSlot(), diary.getThirdTimeSlot(), diary.getFourthTimeSlot()
+        );
+    }
+
+    public PhotoCaptureInfoResponse toPhotoCaptureInfoResponse(PhotoCaptureInfoDto dto) {
+        boolean isCapturePossible = dto.currentPhotoIndex() != -1;
+        return new PhotoCaptureInfoResponse(
+                isCapturePossible,
+                isCapturePossible ? dto.currentPhotoIndex() : null,
+                isCapturePossible ? dto.photoCaptureExpiration() : null
         );
     }
 }

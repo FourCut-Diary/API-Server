@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -48,7 +50,26 @@ public class Diary extends AuditingTimeEntity {
     @Column
     private String fourthComment;
 
+    @Column(nullable = false)
+    private LocalDateTime firstTimeSlot;
+
+    @Column(nullable = false)
+    private LocalDateTime secondTimeSlot;
+
+    @Column(nullable = false)
+    private LocalDateTime thirdTimeSlot;
+
+    @Column(nullable = false)
+    private LocalDateTime fourthTimeSlot;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public void updateTimeSlot(List<LocalDateTime> timeSlots) {
+        this.firstTimeSlot = timeSlots.get(0);
+        this.secondTimeSlot = timeSlots.get(1);
+        this.thirdTimeSlot = timeSlots.get(2);
+        this.fourthTimeSlot = timeSlots.get(3);
+    }
 }
