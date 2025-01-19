@@ -1,6 +1,7 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
+import com.fourcut.diary.diary.dto.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.TodayDiaryResponse;
 import com.fourcut.diary.diary.mapper.DiaryResponseMapper;
 import com.fourcut.diary.diary.service.DiaryService;
@@ -24,5 +25,11 @@ public class DiaryController implements DiaryControllerSwagger {
     public ResponseEntity<TodayDiaryResponse> getTodayDiary(@UserAuthentication String socialId) {
 
         return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toTodayDiaryResponse(diaryService.getTodayDiary(socialId)));
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<DiaryDetailResponse> getDiary(String socialId, String date) {
+
+        return null;
     }
 }
