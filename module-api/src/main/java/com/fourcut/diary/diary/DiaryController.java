@@ -1,9 +1,7 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
-import com.fourcut.diary.diary.dto.DiaryDetailResponse;
-import com.fourcut.diary.diary.dto.PhotoCaptureInfoResponse;
-import com.fourcut.diary.diary.dto.TodayDiaryResponse;
+import com.fourcut.diary.diary.dto.*;
 import com.fourcut.diary.diary.mapper.DiaryResponseMapper;
 import com.fourcut.diary.diary.service.DiaryService;
 import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
@@ -44,5 +42,10 @@ public class DiaryController implements DiaryControllerSwagger {
 
         PhotoCaptureInfoDto photoCaptureInfoDto = diaryService.getTakePhotoInfoByUser(socialId);
         return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toPhotoCaptureInfoResponse(photoCaptureInfoDto));
+    }
+
+    @GetMapping("/month")
+    public ResponseEntity<MonthDiaryResponse> getMonthDiary(String socialId, MonthDiaryRequest request) {
+        return null;
     }
 }

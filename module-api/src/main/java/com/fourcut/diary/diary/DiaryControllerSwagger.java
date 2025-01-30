@@ -1,12 +1,12 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
-import com.fourcut.diary.diary.dto.DiaryDetailResponse;
-import com.fourcut.diary.diary.dto.TodayDiaryResponse;
-import com.fourcut.diary.diary.dto.PhotoCaptureInfoResponse;
+import com.fourcut.diary.diary.dto.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Tag(name = "Diary", description = "일기 관련 API 명세서")
@@ -20,4 +20,7 @@ public interface DiaryControllerSwagger {
 
     @Operation(summary = "사진찍기 정보 조회")
     ResponseEntity<PhotoCaptureInfoResponse> getTakePhotoInfo(@UserAuthentication String socialId);
+
+    @Operation(summary = "월별 일기 조회")
+    ResponseEntity<MonthDiaryResponse> getMonthDiary(@UserAuthentication String socialId, @RequestBody @Valid MonthDiaryRequest request);
 }
