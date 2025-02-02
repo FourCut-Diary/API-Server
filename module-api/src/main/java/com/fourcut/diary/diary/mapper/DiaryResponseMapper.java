@@ -30,9 +30,7 @@ public class DiaryResponseMapper {
     public DiaryDetailResponse toDiaryDetailResponse(Diary diary) {
         return new DiaryDetailResponse(
                 diary.getDate(),
-                diary.getFirstPicture(),diary.getSecondPicture(), diary.getThirdPicture(), diary.getFourthPicture(),
-                diary.getFirstComment(), diary.getSecondComment(), diary.getThirdComment(), diary.getFourthComment(),
-                diary.getFirstTimeSlot(), diary.getSecondTimeSlot(), diary.getThirdTimeSlot(), diary.getFourthTimeSlot()
+                diary.getImageUrl()
         );
     }
 
