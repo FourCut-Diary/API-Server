@@ -1,6 +1,8 @@
 package com.fourcut.diary.diary.service;
 
 import com.fourcut.diary.diary.domain.Diary;
+import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
+import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.service.UserRetriever;
 import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
@@ -43,6 +45,15 @@ public class DiaryService {
         Diary diary = diaryRetriever.getTodayDiary(user);
         LocalDateTime now = LocalDateTime.now();
         return getTakePhotoInfo(diary, now);
+    }
+
+    @Transactional(readOnly = true)
+    public MonthDiaryDto getMonthDiaryByUser(String socialId, LocalDate date) {
+        User user = userRetriever.getUserBySocialId(socialId);
+        List<DiaryImageDto> diaryList = diaryRetriever.findDiaryImageByMonth(user, date);
+        Integer countDiary = diaryRetriever.countDiaryByUser(user);
+
+        return new MonthDiaryDto(date.withDayOfMonth(1), diaryList, countDiary);
     }
 
     private PhotoCaptureInfoDto getTakePhotoInfo(Diary diary, LocalDateTime now) {
