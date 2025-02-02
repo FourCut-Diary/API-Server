@@ -46,6 +46,6 @@ public class DiaryResponseMapper {
     }
 
     public MonthDiaryResponse toMonthDiaryResponse(MonthDiaryDto dto) {
-        return new MonthDiaryResponse(dto.monthDiaryList(), dto.recordCount());
+        return new MonthDiaryResponse(dto.month(), dto.diaryList(), dto.recordCount());
     }
 }

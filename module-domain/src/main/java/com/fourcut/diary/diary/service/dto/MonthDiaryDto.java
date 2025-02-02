@@ -7,15 +7,10 @@ import java.util.List;
 
 public record MonthDiaryDto(
 
-        MonthDiaryList monthDiaryList,
+        LocalDate month,
+
+        List<DiaryImageDto> diaryList,
 
         Integer recordCount
 ) {
-
-    public record MonthDiaryList(
-
-            LocalDate month,
-
-            List<DiaryImageDto> diaryList
-    ) {}
 }

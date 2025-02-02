@@ -1,10 +1,15 @@
 package com.fourcut.diary.diary.dto;
 
-import com.fourcut.diary.diary.service.dto.MonthDiaryDto.MonthDiaryList;
+import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public record MonthDiaryResponse(
 
-        MonthDiaryList monthList,
+        LocalDate month,
+
+        List<DiaryImageDto> diaryList,
 
         Integer recordCount
 ) {
