@@ -62,6 +62,9 @@ public class Diary extends AuditingTimeEntity {
     @Column(nullable = false)
     private LocalDateTime fourthTimeSlot;
 
+    @Column
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

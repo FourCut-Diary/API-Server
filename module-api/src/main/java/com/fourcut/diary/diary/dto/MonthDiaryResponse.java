@@ -1,21 +1,12 @@
 package com.fourcut.diary.diary.dto;
 
-import java.time.LocalDate;
-import java.util.List;
+import com.fourcut.diary.diary.service.dto.MonthDiaryDto.MonthDiaryList;
 
 public record MonthDiaryResponse(
 
-        List<MonthDiaryResponseItem> diaryList,
+        MonthDiaryList monthList,
 
         Integer recordCount
 ) {
 
-    public record MonthDiaryResponseItem(
-
-            Long diaryId,
-
-            String diaryImage,
-
-            LocalDate date
-    ) {}
 }

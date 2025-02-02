@@ -2,11 +2,12 @@ package com.fourcut.diary.diary.dto;
 
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record MonthDiaryRequest(
 
         @NotNull
-        List<Integer> monthList
+        List<LocalDate> monthList
 ) {
 }

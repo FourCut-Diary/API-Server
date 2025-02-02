@@ -3,6 +3,7 @@ package com.fourcut.diary.diary.service;
 import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.repository.DiaryRepository;
+import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 import com.fourcut.diary.diary.util.DiaryTimeSlotUtil;
 import com.fourcut.diary.exception.model.NotFoundException;
 import com.fourcut.diary.user.domain.User;
@@ -38,5 +39,13 @@ public class DiaryRetriever {
     public Diary getDiary(User user, LocalDate date) {
         return diaryRepository.findByUserAndDate(user, date)
                 .orElseThrow(() -> new NotFoundException(ErrorMessage.NOT_FOUND_DIARY));
+    }
+
+    public List<DiaryImageDto> findDiaryImageByMonth(User user, LocalDate date) {
+        return diaryRepository.findDiaryImageByMonth(user, date);
+    }
+
+    public Integer countDiaryByUser(User user) {
+        return diaryRepository.countByUser(user);
     }
 }

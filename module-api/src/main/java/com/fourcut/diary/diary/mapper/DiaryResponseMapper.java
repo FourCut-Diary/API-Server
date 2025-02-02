@@ -2,8 +2,10 @@ package com.fourcut.diary.diary.mapper;
 
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.dto.DiaryDetailResponse;
+import com.fourcut.diary.diary.dto.MonthDiaryResponse;
 import com.fourcut.diary.diary.dto.PhotoCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.TodayDiaryResponse;
+import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
 import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
 import org.springframework.stereotype.Component;
 
@@ -41,5 +43,9 @@ public class DiaryResponseMapper {
                 isCapturePossible ? dto.currentPhotoIndex() : null,
                 isCapturePossible ? dto.photoCaptureExpiration() : null
         );
+    }
+
+    public MonthDiaryResponse toMonthDiaryResponse(MonthDiaryDto dto) {
+        return new MonthDiaryResponse(dto.monthDiaryList(), dto.recordCount());
     }
 }
