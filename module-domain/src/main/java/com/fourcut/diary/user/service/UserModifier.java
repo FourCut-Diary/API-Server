@@ -12,7 +12,7 @@ import java.time.LocalTime;
 
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-public class UserCreator {
+public class UserModifier {
 
     private final UserRepository userRepository;
 

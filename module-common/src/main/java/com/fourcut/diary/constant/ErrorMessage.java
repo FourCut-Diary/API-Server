@@ -32,6 +32,9 @@ public enum ErrorMessage {
     // notification_time
     NOT_FOUND_NOTIFICATION_TIME(HttpStatus.NOT_FOUND.value(), "해당 유저의 알림 시간이 존재하지 않습니다."),
 
+    // diary
+    NOT_FOUND_DIARY(HttpStatus.NOT_FOUND.value(), "해당 날짜의 일기가 존재하지 않습니다."),
+
     // external
     INVALID_EXTERNAL_API_DATA(HttpStatus.BAD_REQUEST.value(), "외부 API 통신에 잘못된 값이 전달됐습니다.")
     ;
