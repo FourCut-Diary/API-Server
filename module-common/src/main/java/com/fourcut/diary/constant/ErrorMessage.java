@@ -36,7 +36,8 @@ public enum ErrorMessage {
     NOT_FOUND_DIARY(HttpStatus.NOT_FOUND.value(), "해당 날짜의 일기가 존재하지 않습니다."),
 
     // external
-    INVALID_EXTERNAL_API_DATA(HttpStatus.BAD_REQUEST.value(), "외부 API 통신에 잘못된 값이 전달됐습니다.")
+    INVALID_EXTERNAL_API_DATA(HttpStatus.BAD_REQUEST.value(), "외부 API 통신에 잘못된 값이 전달됐습니다."),
+    INVALID_S3_URL(HttpStatus.BAD_REQUEST.value(), "잘못된 S3 URL이 전달됐습니다.")
     ;
 
     final int status;

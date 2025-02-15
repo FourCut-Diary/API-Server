@@ -1,6 +1,6 @@
 package com.fourcut.diary.aws.dto.response;
 
-public record PresingedUrlResponse(
+public record PresignedUrlPutResponse(
 
         String presignedUrl
 ) {
