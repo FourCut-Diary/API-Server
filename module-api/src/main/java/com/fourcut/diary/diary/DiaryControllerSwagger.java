@@ -1,11 +1,17 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
-import com.fourcut.diary.diary.dto.*;
+import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
+import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
+import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
+import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.Map;
 
 @Tag(name = "Diary", description = "일기 관련 API 명세서")
 public interface DiaryControllerSwagger {
@@ -21,4 +27,7 @@ public interface DiaryControllerSwagger {
 
     @Operation(summary = "월별 일기 조회")
     ResponseEntity<MonthDiaryResponse> getMonthDiary(@UserAuthentication String socialId, @RequestParam String date);
+
+    @Operation(summary = "오늘의 순간 사진 등록")
+    ResponseEntity<Map<String, Boolean>> enrollImage(@UserAuthentication String socialId, @RequestBody String request);
 }

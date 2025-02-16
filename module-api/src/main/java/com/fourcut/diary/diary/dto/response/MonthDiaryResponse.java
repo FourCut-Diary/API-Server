@@ -1,4 +1,4 @@
-package com.fourcut.diary.diary.dto;
+package com.fourcut.diary.diary.dto.response;
 
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 
