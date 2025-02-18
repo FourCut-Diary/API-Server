@@ -1,4 +1,4 @@
-package com.fourcut.diary.diary.dto;
+package com.fourcut.diary.diary.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 

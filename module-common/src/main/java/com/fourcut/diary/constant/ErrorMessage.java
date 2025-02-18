@@ -34,10 +34,13 @@ public enum ErrorMessage {
 
     // diary
     NOT_FOUND_DIARY(HttpStatus.NOT_FOUND.value(), "해당 날짜의 일기가 존재하지 않습니다."),
+    INVALID_PICTURE_INDEX(HttpStatus.BAD_REQUEST.value(), "잘못된 사진 순서값이 전달됐습니다."),
+    INVALID_PICTURE_TIME(HttpStatus.BAD_REQUEST.value(), "사진을 등록할 수 없는 시간입니다."),
 
     // external
     INVALID_EXTERNAL_API_DATA(HttpStatus.BAD_REQUEST.value(), "외부 API 통신에 잘못된 값이 전달됐습니다."),
-    INVALID_S3_URL(HttpStatus.BAD_REQUEST.value(), "잘못된 S3 URL이 전달됐습니다.")
+    INVALID_S3_URL(HttpStatus.BAD_REQUEST.value(), "잘못된 S3 URL이 전달됐습니다."),
+    NOT_EXIST_IMAGE_URL(HttpStatus.BAD_REQUEST.value(), "등록되지 않은 이미지 URL입니다.")
     ;
 
     final int status;

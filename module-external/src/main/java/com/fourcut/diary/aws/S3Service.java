@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.PutObjectRequest;
-import software.amazon.awssdk.services.s3.model.S3Exception;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
@@ -53,7 +52,6 @@ public class S3Service {
     public List<String> createGetPresignedUrl(List<String> imageUrlList) {
 
         try (S3Presigner s3Presigner = createPresigner()) {
-
             return imageUrlList.stream()
                     .map(imageUrl -> {
                         String objectKey = extractObjectKey(imageUrl);
@@ -75,6 +73,27 @@ public class S3Service {
         }
     }
 
+    public void checkImageUrlExists(String imageUrl) {
+
+        try (S3Client s3Client = createS3Client()) {
+            HeadObjectRequest headObjectRequest = HeadObjectRequest.builder()
+                    .bucket(awsConfig.getS3BucketName())
+                    .key(extractObjectKey(imageUrl))
+                    .build();
+
+            HeadObjectResponse response = s3Client.headObject(headObjectRequest);
+            if (response != null) {
+                return;
+            }
+        } catch (S3Exception exception) {
+            if (exception.statusCode() == 404) {
+                throw new BadRequestException(ErrorMessage.NOT_EXIST_IMAGE_URL);
+            }
+            log.error("S3 Exception: {}", exception.awsErrorDetails().errorMessage(), exception);
+            throw new RuntimeException("S3 service error");
+        }
+    }
+
     private String extractObjectKey(String s3Url) {
         try {
             URI uri = new URI(s3Url);
@@ -87,6 +106,13 @@ public class S3Service {
 
     private S3Presigner createPresigner() {
         return S3Presigner.builder()
+                .region(Region.AP_NORTHEAST_2)
+                .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForS3())
+                .build();
+    }
+
+    private S3Client createS3Client() {
+        return S3Client.builder()
                 .region(Region.AP_NORTHEAST_2)
                 .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForS3())
                 .build();
