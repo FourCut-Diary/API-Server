@@ -58,7 +58,7 @@ public class DiaryController implements DiaryControllerSwagger {
         return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toMonthDiaryResponse(monthDiaryDto));
     }
 
-    @PostMapping("/picture")
+    @PutMapping("/picture")
     public ResponseEntity<Map<String, Boolean>> enrollPicture(@UserAuthentication String socialId, @RequestBody @Valid final DiaryPictureRequest request) {
 
         s3Service.checkImageUrlExists(request.imageUrl());
