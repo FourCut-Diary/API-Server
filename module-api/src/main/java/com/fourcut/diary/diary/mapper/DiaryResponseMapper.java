@@ -6,7 +6,7 @@ import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
 import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
-import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
+import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -34,7 +34,7 @@ public class DiaryResponseMapper {
         );
     }
 
-    public PhotoCaptureInfoResponse toPhotoCaptureInfoResponse(PhotoCaptureInfoDto dto) {
+    public PhotoCaptureInfoResponse toPhotoCaptureInfoResponse(PictureCaptureInfoDto dto) {
         boolean isCapturePossible = dto.currentPhotoIndex() != -1;
         return new PhotoCaptureInfoResponse(
                 isCapturePossible,

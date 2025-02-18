@@ -42,7 +42,7 @@ public class DiaryRetriever {
     }
 
     public List<DiaryImageDto> findDiaryImageByMonth(User user, LocalDate date) {
-        return diaryRepository.findDiaryImageByMonth(user, date);
+        return diaryRepository.findDiaryImageByMonth(user.getId(), date);
     }
 
     public Integer countDiaryByUser(User user) {

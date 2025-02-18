@@ -1,6 +1,8 @@
 package com.fourcut.diary.diary.domain;
 
 import com.fourcut.diary.common.AuditingTimeEntity;
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.exception.model.BadRequestException;
 import com.fourcut.diary.user.domain.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -74,5 +76,21 @@ public class Diary extends AuditingTimeEntity {
         this.secondTimeSlot = timeSlots.get(1);
         this.thirdTimeSlot = timeSlots.get(2);
         this.fourthTimeSlot = timeSlots.get(3);
+    }
+
+    public void checkEnrollPicturePossible(LocalDateTime now, Integer index) {
+        LocalDateTime targetTimeSlot = switch (index) {
+            case 1 -> this.firstTimeSlot;
+            case 2 -> this.secondTimeSlot;
+            case 3 -> this.thirdTimeSlot;
+            case 4 -> this.fourthTimeSlot;
+            default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
+        };
+
+        LocalDateTime endTime = targetTimeSlot.plusMinutes(20);
+
+        if (now.isBefore(targetTimeSlot) || now.isAfter(endTime)) {
+            throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
+        }
     }
 }

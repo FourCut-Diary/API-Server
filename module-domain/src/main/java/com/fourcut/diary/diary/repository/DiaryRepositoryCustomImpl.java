@@ -1,9 +1,13 @@
 package com.fourcut.diary.diary.repository;
 
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.domain.QDiary;
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
-import com.fourcut.diary.user.domain.User;
+import com.fourcut.diary.exception.model.BadRequestException;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -16,7 +20,7 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<DiaryImageDto> findDiaryImageByMonth(User user, LocalDate date) {
+    public List<DiaryImageDto> findDiaryImageByMonth(Long userId, LocalDate date) {
 
         QDiary diary = QDiary.diary;
 
@@ -33,7 +37,34 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
                         )
                 )
                 .from(diary)
-                .where(diary.date.between(startOfMonth, endOfMonth))
+                .where(
+                        diary.date.between(startOfMonth, endOfMonth),
+                        diary.user.id.eq(userId)
+                )
                 .fetch();
+    }
+
+    @Override
+    public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index) {
+
+        QDiary diary = QDiary.diary;
+        PathBuilder<Diary> entityPath = new PathBuilder<>(Diary.class, "diary");
+        Path<String> columnPath = getPictureOrderColumnPath(entityPath, index);
+
+        queryFactory
+                .update(diary)
+                .set(columnPath, imageUrl)
+                .where(diary.id.eq(diaryId))
+                .execute();
+    }
+
+    private Path<String> getPictureOrderColumnPath(PathBuilder<Diary> entityPath, Integer columnIndex) {
+        return switch (columnIndex) {
+            case 1 -> entityPath.getString("firstPicture");
+            case 2 -> entityPath.getString("secondPicture");
+            case 3 -> entityPath.getString("thirdPicture");
+            case 4 -> entityPath.getString("fourthPicture");
+            default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
+        };
     }
 }

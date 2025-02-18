@@ -1,6 +1,8 @@
 package com.fourcut.diary.diary;
 
+import com.fourcut.diary.aws.S3Service;
 import com.fourcut.diary.config.resolver.UserAuthentication;
+import com.fourcut.diary.diary.dto.request.DiaryPictureRequest;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
 import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
@@ -8,7 +10,8 @@ import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import com.fourcut.diary.diary.mapper.DiaryResponseMapper;
 import com.fourcut.diary.diary.service.DiaryService;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
-import com.fourcut.diary.user.service.dto.PhotoCaptureInfoDto;
+import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class DiaryController implements DiaryControllerSwagger {
 
     private final DiaryService diaryService;
+    private final S3Service s3Service;
 
     private final DiaryResponseMapper diaryResponseMapper;
 
@@ -43,8 +47,8 @@ public class DiaryController implements DiaryControllerSwagger {
     @GetMapping("/photo")
     public ResponseEntity<PhotoCaptureInfoResponse> getTakePhotoInfo(@UserAuthentication String socialId) {
 
-        PhotoCaptureInfoDto photoCaptureInfoDto = diaryService.getTakePhotoInfoByUser(socialId);
-        return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toPhotoCaptureInfoResponse(photoCaptureInfoDto));
+        PictureCaptureInfoDto pictureCaptureInfoDto = diaryService.getTakePictureInfoByUser(socialId);
+        return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toPhotoCaptureInfoResponse(pictureCaptureInfoDto));
     }
 
     @GetMapping("/month")
@@ -54,9 +58,11 @@ public class DiaryController implements DiaryControllerSwagger {
         return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toMonthDiaryResponse(monthDiaryDto));
     }
 
-    @PostMapping("/photo")
-    public ResponseEntity<Map<String, Boolean>> enrollImage(@UserAuthentication String socialId, @RequestBody String request) {
+    @PostMapping("/picture")
+    public ResponseEntity<Map<String, Boolean>> enrollPicture(@UserAuthentication String socialId, @RequestBody @Valid final DiaryPictureRequest request) {
 
+        s3Service.checkImageUrlExists(request.imageUrl());
+        diaryService.enrollPictureInDiary(socialId, request.now(), request.imageUrl(), request.index());
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", true));
     }
 }

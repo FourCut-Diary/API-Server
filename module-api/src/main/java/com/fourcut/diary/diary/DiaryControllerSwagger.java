@@ -1,6 +1,7 @@
 package com.fourcut.diary.diary;
 
 import com.fourcut.diary.config.resolver.UserAuthentication;
+import com.fourcut.diary.diary.dto.request.DiaryPictureRequest;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
 import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
@@ -29,5 +30,5 @@ public interface DiaryControllerSwagger {
     ResponseEntity<MonthDiaryResponse> getMonthDiary(@UserAuthentication String socialId, @RequestParam String date);
 
     @Operation(summary = "오늘의 순간 사진 등록")
-    ResponseEntity<Map<String, Boolean>> enrollImage(@UserAuthentication String socialId, @RequestBody String request);
+    ResponseEntity<Map<String, Boolean>> enrollPicture(@UserAuthentication String socialId, @RequestBody DiaryPictureRequest request);
 }
