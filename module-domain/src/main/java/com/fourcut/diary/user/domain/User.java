@@ -59,4 +59,8 @@ public class User extends AuditingTimeEntity {
                 .role(RoleType.USER)
                 .build();
     }
+
+    public boolean isOverDay() {
+        return dailyStartTime.isAfter(dailyEndTime);
+    }
 }

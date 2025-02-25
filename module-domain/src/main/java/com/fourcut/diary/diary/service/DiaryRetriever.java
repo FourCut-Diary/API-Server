@@ -22,7 +22,7 @@ public class DiaryRetriever {
 
     public Diary getTodayDiary(User user) {
         LocalDate today = LocalDate.now();
-        List<LocalDateTime> timeSlots = DiaryTimeSlotUtil.getRandomTimeSlot(user, today);
+        List<LocalDateTime> timeSlots = DiaryTimeSlotUtil.getRandomTimeSlot(user, today, false);
         return diaryRepository.findByUserAndDate(user, today)
                 .orElseGet(() -> diaryRepository.save(
                         Diary.builder()
@@ -47,5 +47,13 @@ public class DiaryRetriever {
 
     public Integer countDiaryByUser(User user) {
         return diaryRepository.countByUser(user);
+    }
+
+    public List<Diary> getExpiredTodayDiary(LocalDateTime now) {
+        return diaryRepository.findExpiredTodayDiary(now);
+    }
+
+    public boolean existsDiary(User user, LocalDate date) {
+        return diaryRepository.existsByUserAndDate(user, date);
     }
 }

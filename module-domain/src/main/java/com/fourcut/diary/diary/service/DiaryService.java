@@ -4,12 +4,14 @@ import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
+import com.fourcut.diary.diary.util.DiaryTimeSlotUtil;
 import com.fourcut.diary.exception.model.BadRequestException;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.service.UserRetriever;
 import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
 import com.fourcut.diary.util.LocalDateTimeUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiaryService {
@@ -76,6 +79,22 @@ public class DiaryService {
         }
 
         diaryModifier.enrollDailyDiary(diary, imageUrl, title);
+    }
+
+    @Transactional
+    public void createNextDayDiaries(LocalDateTime now) {
+        List<Diary> expiredDiaries = diaryRetriever.getExpiredTodayDiary(now);
+        LocalDate currentDate = now.toLocalDate();
+        expiredDiaries.forEach(diary -> {
+            try {
+                User user = diary.getUser();
+                List<LocalDateTime> timeSlots = DiaryTimeSlotUtil.getRandomTimeSlot(user, currentDate, true);
+
+                diaryModifier.createDiary(currentDate.plusDays(1), user, timeSlots);
+            } catch (Exception e) {
+                log.error("❌ Diary 생성 실패 (User: {}, Date: {}): {}", diary.getUser().getId(), currentDate, e.getMessage(), e);
+            }
+        });
     }
 
     private PictureCaptureInfoDto getTakePictureInfo(Diary diary, LocalDateTime now) {

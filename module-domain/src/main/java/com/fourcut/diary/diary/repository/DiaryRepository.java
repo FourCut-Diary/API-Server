@@ -11,4 +11,5 @@ public interface DiaryRepository extends JpaRepository<Diary, Long>, DiaryReposi
 
     Optional<Diary> findByUserAndDate(User user, LocalDate date);
     Integer countByUser(User user);
+    Boolean existsByUserAndDate(User user, LocalDate date);
 }

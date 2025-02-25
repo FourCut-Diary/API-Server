@@ -37,6 +37,7 @@ public enum ErrorMessage {
     INVALID_PICTURE_INDEX(HttpStatus.BAD_REQUEST.value(), "잘못된 사진 순서값이 전달됐습니다."),
     INVALID_PICTURE_TIME(HttpStatus.BAD_REQUEST.value(), "사진을 등록할 수 없는 시간입니다."),
     TODAY_NOT_FINISH(HttpStatus.BAD_REQUEST.value(), "오늘의 일기 사진 기록이 종료되지 않았습니다."),
+    ALREADY_EXISTS_DIARY(HttpStatus.BAD_REQUEST.value(), "이미 해당 날짜의 일기가 존재합니다."),
 
     // external
     INVALID_EXTERNAL_API_DATA(HttpStatus.BAD_REQUEST.value(), "외부 API 통신에 잘못된 값이 전달됐습니다."),
