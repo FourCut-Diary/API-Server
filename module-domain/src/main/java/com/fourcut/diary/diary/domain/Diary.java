@@ -93,4 +93,16 @@ public class Diary extends AuditingTimeEntity {
             throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
         }
     }
+
+    public void enrollTitle(String title) {
+        this.title = title;
+    }
+
+    public void enrollDailyPicture(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public boolean isFinished() {
+        return fourthTimeSlot.plusMinutes(20).isBefore(LocalDateTime.now());
+    }
 }

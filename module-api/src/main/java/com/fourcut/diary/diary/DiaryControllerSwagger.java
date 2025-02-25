@@ -34,5 +34,5 @@ public interface DiaryControllerSwagger {
     ResponseEntity<Map<String, Boolean>> enrollPicture(@UserAuthentication String socialId, @RequestBody DiaryPictureRequest request);
 
     @Operation(summary = "오늘의 일기 등록")
-    ResponseEntity<Map<String, Boolean>> enrollDiary(@UserAuthentication String socialId, @RequestParam DiaryRequest request);
+    ResponseEntity<Map<String, Boolean>> enrollDiary(@UserAuthentication String socialId, @RequestBody DiaryRequest request);
 }
