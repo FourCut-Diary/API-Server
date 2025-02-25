@@ -41,13 +41,13 @@ public class User extends AuditingTimeEntity {
     private LocalTime dailyEndTime;
 
     @Column(nullable = false)
-    private String snsArnEndpoint;
+    private String fcmToken;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
+    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String fcmToken) {
         return User.builder()
                 .socialId(socialId)
                 .nickname(nickname)
@@ -55,9 +55,13 @@ public class User extends AuditingTimeEntity {
                 .gender(gender)
                 .dailyStartTime(dailyStartTime)
                 .dailyEndTime(dailyEndTime)
-                .snsArnEndpoint(snsArnEndpoint)
+                .fcmToken(fcmToken)
                 .role(RoleType.USER)
                 .build();
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 
     public boolean isOverDay() {

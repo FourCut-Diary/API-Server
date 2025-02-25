@@ -1,7 +1,6 @@
 package com.fourcut.diary.user.facade;
 
 import com.fourcut.diary.auth.service.AuthService;
-import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
 import com.fourcut.diary.jwt.JwtToken;
 import com.fourcut.diary.jwt.JwtTokenManager;
@@ -30,13 +29,9 @@ public class AuthFacade {
     private final AuthService authService;
     private final UserService userService;
 
-    private final SnsService snsService;
-
     public SignupResponse signup(SignupRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
 
-        String snsArnEndpoint = snsService.createEndpoint(request.fcmToken());
-        String endpoint = snsArnEndpoint.split("/")[3];
         Long id = userService.createUser(
                 socialLoginResponse.socialId(),
                 request.nickname(),
@@ -44,7 +39,7 @@ public class AuthFacade {
                 request.gender(),
                 request.dailyStartTime(),
                 request.dailyEndTime(),
-                endpoint
+                request.fcmToken()
         );
 
         JwtToken jwtToken = getJwtToken(socialLoginResponse.socialId());
@@ -55,6 +50,7 @@ public class AuthFacade {
     public LoginResponse login(LoginRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
         User loginUser = userService.getUserBySocialId(socialLoginResponse.socialId());
+        loginUser.updateFcmToken(request.fcmToken());
         JwtToken jwtToken = getJwtToken(loginUser.getSocialId());
 
         return new LoginResponse(loginUser.getId(), jwtToken.accessToken(), jwtToken.refreshToken());

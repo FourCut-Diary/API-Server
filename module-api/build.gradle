@@ -4,5 +4,4 @@ dependencies {
     implementation project(':module-common')
     implementation project(':module-domain')
     implementation project(':module-external')
-    implementation project(':module-notification')
 }

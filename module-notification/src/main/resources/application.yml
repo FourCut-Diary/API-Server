@@ -1,3 +1,5 @@
+server:
+  port: 8082
 
 spring:
   datasource:
@@ -18,13 +20,6 @@ spring:
     redis:
       host: test
       port: 6379
-
-# swagger
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
 
 # auth
 jwt:

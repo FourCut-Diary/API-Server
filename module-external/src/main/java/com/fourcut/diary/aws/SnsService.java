@@ -15,23 +15,6 @@ public class SnsService {
 
     private final AwsConfig awsConfig;
 
-    public String createEndpoint(String token) {
-
-        try (SnsClient snsClient = createSnsClient()) {
-
-            CreatePlatformEndpointRequest request = CreatePlatformEndpointRequest.builder()
-                    .token(token)
-                    .platformApplicationArn(awsConfig.getSnsPlatformApplicationArn())
-                    .build();
-
-            CreatePlatformEndpointResponse response = snsClient.createPlatformEndpoint(request);
-            return response.endpointArn();
-        } catch (SnsException exception) {
-            log.error(exception.getMessage());
-            return null;
-        }
-    }
-
     public void topicPublish(String endpoint) {
 
         log.info("푸시알림 발송: {}", awsConfig.getSnsTokenArn() + endpoint);
@@ -53,5 +36,16 @@ public class SnsService {
                 .region(Region.AP_NORTHEAST_2)
                 .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForSNS())
                 .build();
+    }
+
+    private String createTakePictureMessage(Long userId, String fcmToken, int index) {
+        return """
+                {
+                    "userId": "%s",
+                    "fcmToken": "%s",
+                    "title": "네 컷 일기",
+                    "body": "지금, 오늘의 %d번째 사진을 찍어주세요!"
+                }
+                """.formatted(userId, fcmToken, index);
     }
 }
