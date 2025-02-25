@@ -3,6 +3,7 @@ package com.fourcut.diary.diary;
 import com.fourcut.diary.aws.S3Service;
 import com.fourcut.diary.config.resolver.UserAuthentication;
 import com.fourcut.diary.diary.dto.request.DiaryPictureRequest;
+import com.fourcut.diary.diary.dto.request.DiaryRequest;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
 import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
@@ -62,7 +63,15 @@ public class DiaryController implements DiaryControllerSwagger {
     public ResponseEntity<Map<String, Boolean>> enrollPicture(@UserAuthentication String socialId, @RequestBody @Valid final DiaryPictureRequest request) {
 
         s3Service.checkImageUrlExists(request.imageUrl());
-        diaryService.enrollPictureInDiary(socialId, request.now(), request.imageUrl(), request.index());
+        diaryService.enrollPictureInDiary(socialId, request.now(), request.imageUrl(), request.index(), request.comment());
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", true));
+    }
+
+    @PutMapping("/enroll")
+    public ResponseEntity<Map<String, Boolean>> enrollDiary(@UserAuthentication String socialId, @RequestBody @Valid final DiaryRequest request) {
+
+        s3Service.checkImageUrlExists(request.imageUrl());
+        diaryService.enrollDiary(socialId, request.imageUrl(), request.title());
         return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", true));
     }
 }

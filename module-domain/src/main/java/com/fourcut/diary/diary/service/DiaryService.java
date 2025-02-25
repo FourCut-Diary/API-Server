@@ -1,8 +1,10 @@
 package com.fourcut.diary.diary.service;
 
+import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
+import com.fourcut.diary.exception.model.BadRequestException;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.service.UserRetriever;
 import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
@@ -58,11 +60,22 @@ public class DiaryService {
     }
 
     @Transactional
-    public void enrollPictureInDiary(String socialId, LocalDateTime now, String imageUrl, Integer index) {
+    public void enrollPictureInDiary(String socialId, LocalDateTime now, String imageUrl, Integer index, String comment) {
         User user = userRetriever.getUserBySocialId(socialId);
         Diary diary = diaryRetriever.getTodayDiary(user);
         diary.checkEnrollPicturePossible(now, index);
-        diaryModifier.enrollPhotoInDiary(diary, imageUrl, index);
+        diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment);
+    }
+
+    @Transactional
+    public void enrollDiary(String socialId, String imageUrl, String title) {
+        User user = userRetriever.getUserBySocialId(socialId);
+        Diary diary = diaryRetriever.getTodayDiary(user);
+        if (!diary.isFinished() && diary.getFourthPicture() == null) {
+            throw new BadRequestException(ErrorMessage.TODAY_NOT_FINISH);
+        }
+
+        diaryModifier.enrollDailyDiary(diary, imageUrl, title);
     }
 
     private PictureCaptureInfoDto getTakePictureInfo(Diary diary, LocalDateTime now) {

@@ -45,15 +45,17 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index) {
+    public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment) {
 
         QDiary diary = QDiary.diary;
         PathBuilder<Diary> entityPath = new PathBuilder<>(Diary.class, "diary");
-        Path<String> columnPath = getPictureOrderColumnPath(entityPath, index);
+        Path<String> pictureColumnPath = getPictureOrderColumnPath(entityPath, index);
+        Path<String> commentColumnPath = getCommentOrderColumnPath(entityPath, index);
 
         queryFactory
                 .update(diary)
-                .set(columnPath, imageUrl)
+                .set(pictureColumnPath, imageUrl)
+                .set(commentColumnPath, comment)
                 .where(diary.id.eq(diaryId))
                 .execute();
     }
@@ -64,6 +66,16 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             case 2 -> entityPath.getString("secondPicture");
             case 3 -> entityPath.getString("thirdPicture");
             case 4 -> entityPath.getString("fourthPicture");
+            default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
+        };
+    }
+
+    private Path<String> getCommentOrderColumnPath(PathBuilder<Diary> entityPath, Integer columnIndex) {
+        return switch (columnIndex) {
+            case 1 -> entityPath.getString("firstComment");
+            case 2 -> entityPath.getString("secondComment");
+            case 3 -> entityPath.getString("thirdComment");
+            case 4 -> entityPath.getString("fourthComment");
             default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
         };
     }
