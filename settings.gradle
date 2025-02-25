@@ -4,4 +4,5 @@ include 'module-domain'
 include 'module-api'
 include 'module-common'
 include 'module-external'
+include 'module-notification'
 
