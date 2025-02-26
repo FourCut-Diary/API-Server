@@ -47,17 +47,6 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public List<Diary> findExpiredTodayDiary(LocalDateTime now) {
-
-        QDiary diary = QDiary.diary;
-
-        return queryFactory
-                .selectFrom(diary)
-                .where(isExpiredDiary(diary,now.minusMinutes(20)))
-                .fetch();
-    }
-
-    @Override
     public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment) {
 
         QDiary diary = QDiary.diary;
@@ -91,13 +80,5 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             case 4 -> entityPath.getString("fourthComment");
             default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
         };
-    }
-
-    private BooleanExpression isExpiredDiary(QDiary diary, LocalDateTime targetTime) {
-        return diary.fourthTimeSlot.year().eq(targetTime.getYear())
-                .and(diary.fourthTimeSlot.month().eq(targetTime.getMonthValue()))
-                .and(diary.fourthTimeSlot.dayOfMonth().eq(targetTime.getDayOfMonth()))
-                .and(diary.fourthTimeSlot.hour().eq(targetTime.getHour()))
-                .and(diary.fourthTimeSlot.minute().eq(targetTime.getMinute()));
     }
 }

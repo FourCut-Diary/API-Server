@@ -1,4 +1,4 @@
-package com.fourcut.diary.diary.util;
+package com.fourcut.diary.notification.util;
 
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.util.LocalDateTimeUtil;
@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class DiaryTimeSlotUtil {
+public class NotificationTimeSlotUtil {
 
     public static List<LocalDateTime> getRandomTimeSlot(User user, LocalDate currentDate, boolean isFinishedToday) {
         LocalDateTime startTime = calculateStartTime(user, currentDate);

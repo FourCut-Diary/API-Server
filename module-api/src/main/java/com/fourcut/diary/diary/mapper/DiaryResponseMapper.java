@@ -3,7 +3,7 @@ package com.fourcut.diary.diary.mapper;
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
-import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
+import com.fourcut.diary.notification.dto.response.PictureCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
 import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
@@ -31,15 +31,6 @@ public class DiaryResponseMapper {
         return new DiaryDetailResponse(
                 diary.getDate(),
                 diary.getImageUrl()
-        );
-    }
-
-    public PhotoCaptureInfoResponse toPhotoCaptureInfoResponse(PictureCaptureInfoDto dto) {
-        boolean isCapturePossible = dto.currentPhotoIndex() != -1;
-        return new PhotoCaptureInfoResponse(
-                isCapturePossible,
-                isCapturePossible ? dto.currentPhotoIndex() : null,
-                isCapturePossible ? dto.photoCaptureExpiration() : null
         );
     }
 

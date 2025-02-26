@@ -21,6 +21,6 @@ public class SchedulerService {
     @Scheduled(cron = "0 * * * * *")
     public void setRandomNextDayPushNotificationTime() {
         LocalDateTime now = LocalDateTime.now();
-        diaryService.createNextDayDiaries(now);
+        diaryService.createNextDayDiaries();
     }
 }
