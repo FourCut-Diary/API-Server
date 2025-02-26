@@ -1,12 +1,13 @@
 package com.fourcut.diary.service;
 
 import com.fourcut.diary.diary.service.DiaryService;
+import com.fourcut.diary.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -14,13 +15,15 @@ import java.time.LocalDateTime;
 public class SchedulerService {
 
     private final DiaryService diaryService;
+    private final NotificationService notificationService;
 
     /**
-     * 매분마다 사용자의 일기가 만료됐는지 확인
+     * 자정에 다음날의 일기 생성 및 푸시알림 시간 업데이트
      */
-    @Scheduled(cron = "0 * * * * *")
-    public void setRandomNextDayPushNotificationTime() {
-        LocalDateTime now = LocalDateTime.now();
-        diaryService.createNextDayDiaries();
+    @Scheduled(cron = "59 59 23 * * *")
+    public void createNextDayDiaryAndNotificationTime() {
+        LocalDate nextDay = LocalDate.now().plusDays(1);
+        diaryService.createNextDayDiaries(nextDay);
+        notificationService.updateNotificationTime(nextDay);
     }
 }

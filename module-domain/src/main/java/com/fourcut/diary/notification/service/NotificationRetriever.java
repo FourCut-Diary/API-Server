@@ -21,7 +21,7 @@ public class NotificationRetriever {
         return notificationRepository.findByUser(user)
                 .orElseGet(() -> {
                     LocalDate today = LocalDate.now();
-                    List<LocalDateTime> timeSlots = NotificationTimeSlotUtil.getRandomTimeSlot(user, today, false);
+                    List<LocalDateTime> timeSlots = NotificationTimeSlotUtil.getRandomTimeSlot(user, today);
                     return notificationRepository.save(
                             Notification.builder()
                                     .firstTimeSlot(timeSlots.get(0))
@@ -32,5 +32,9 @@ public class NotificationRetriever {
                                     .build()
                     );
                 });
+    }
+
+    public List<Notification> getAllNotifications() {
+        return notificationRepository.findAll();
     }
 }

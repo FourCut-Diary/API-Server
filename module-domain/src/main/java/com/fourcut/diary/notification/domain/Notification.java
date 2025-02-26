@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -35,7 +36,14 @@ public class Notification {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    public void checkEnrollPicturePossible(LocalDateTime now, Integer index) {
+    public void updateTimeSlot(List<LocalDateTime> timeSlots) {
+        this.firstTimeSlot = timeSlots.get(0);
+        this.secondTimeSlot = timeSlots.get(1);
+        this.thirdTimeSlot = timeSlots.get(2);
+        this.fourthTimeSlot = timeSlots.get(3);
+    }
+
+    public boolean isPossibleEnrollPicture(LocalDateTime now, Integer index) {
         LocalDateTime targetTimeSlot = switch (index) {
             case 1 -> this.firstTimeSlot;
             case 2 -> this.secondTimeSlot;
@@ -46,9 +54,7 @@ public class Notification {
 
         LocalDateTime endTime = targetTimeSlot.plusMinutes(20);
 
-        if (now.isBefore(targetTimeSlot) || now.isAfter(endTime)) {
-            throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
-        }
+        return !now.isBefore(targetTimeSlot) && !now.isAfter(endTime);
     }
 
     public boolean isFinished() {

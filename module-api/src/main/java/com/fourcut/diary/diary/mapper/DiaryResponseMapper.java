@@ -3,10 +3,8 @@ package com.fourcut.diary.diary.mapper;
 import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
-import com.fourcut.diary.notification.dto.response.PictureCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
-import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
 import org.springframework.stereotype.Component;
 
 @Component

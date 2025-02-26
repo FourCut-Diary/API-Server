@@ -60,7 +60,9 @@ public class DiaryService {
         User user = userRetriever.getUserBySocialId(socialId);
         Diary diary = diaryRetriever.getTodayDiary(user);
         Notification notification = notificationRetriever.getTodayNotification(user);
-        notification.checkEnrollPicturePossible(now, index);
+        if(!notification.isPossibleEnrollPicture(now, index)) {
+            throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
+        }
         diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment);
     }
 
@@ -77,10 +79,8 @@ public class DiaryService {
     }
 
     @Transactional
-    public void createNextDayDiaries() {
+    public void createNextDayDiaries(LocalDate nextDay) {
         List<User> allUser = userRetriever.getAllUsers();
-        LocalDate nextDay = LocalDate.now().plusDays(1);
-
         for (User user : allUser) {
             if (diaryRetriever.existsDiary(user, nextDay)) {
                 continue;
