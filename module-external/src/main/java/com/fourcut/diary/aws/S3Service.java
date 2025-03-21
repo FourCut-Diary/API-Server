@@ -107,14 +107,14 @@ public class S3Service {
     private S3Presigner createPresigner() {
         return S3Presigner.builder()
                 .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForS3())
+                .credentialsProvider(awsConfig.credentialsProviderForS3())
                 .build();
     }
 
     private S3Client createS3Client() {
         return S3Client.builder()
                 .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForS3())
+                .credentialsProvider(awsConfig.credentialsProviderForS3())
                 .build();
     }
 }

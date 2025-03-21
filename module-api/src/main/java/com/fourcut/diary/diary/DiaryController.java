@@ -6,12 +6,10 @@ import com.fourcut.diary.diary.dto.request.DiaryPictureRequest;
 import com.fourcut.diary.diary.dto.request.DiaryRequest;
 import com.fourcut.diary.diary.dto.response.DiaryDetailResponse;
 import com.fourcut.diary.diary.dto.response.MonthDiaryResponse;
-import com.fourcut.diary.diary.dto.response.PhotoCaptureInfoResponse;
 import com.fourcut.diary.diary.dto.response.TodayDiaryResponse;
 import com.fourcut.diary.diary.mapper.DiaryResponseMapper;
 import com.fourcut.diary.diary.service.DiaryService;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
-import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,13 +41,6 @@ public class DiaryController implements DiaryControllerSwagger {
         return ResponseEntity.status(HttpStatus.OK).body(
                 diaryResponseMapper.toDiaryDetailResponse(diaryService.getDiary(socialId, LocalDate.parse(date)))
         );
-    }
-
-    @GetMapping("/photo")
-    public ResponseEntity<PhotoCaptureInfoResponse> getTakePhotoInfo(@UserAuthentication String socialId) {
-
-        PictureCaptureInfoDto pictureCaptureInfoDto = diaryService.getTakePictureInfoByUser(socialId);
-        return ResponseEntity.status(HttpStatus.OK).body(diaryResponseMapper.toPhotoCaptureInfoResponse(pictureCaptureInfoDto));
     }
 
     @GetMapping("/month")

@@ -5,11 +5,12 @@ import com.fourcut.diary.diary.domain.Diary;
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 import com.fourcut.diary.diary.service.dto.MonthDiaryDto;
 import com.fourcut.diary.exception.model.BadRequestException;
+import com.fourcut.diary.notification.domain.Notification;
+import com.fourcut.diary.notification.service.NotificationRetriever;
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.user.service.UserRetriever;
-import com.fourcut.diary.user.service.dto.PictureCaptureInfoDto;
-import com.fourcut.diary.util.LocalDateTimeUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiaryService {
@@ -27,6 +29,8 @@ public class DiaryService {
 
     private final DiaryRetriever diaryRetriever;
     private final DiaryModifier diaryModifier;
+
+    private final NotificationRetriever notificationRetriever;
 
     @Transactional
     public Diary getTodayDiary(String socialId) {
@@ -42,14 +46,6 @@ public class DiaryService {
         return diaryRetriever.getDiary(user, date);
     }
 
-    @Transactional
-    public PictureCaptureInfoDto getTakePictureInfoByUser(String socialId) {
-        User user = userRetriever.getUserBySocialId(socialId);
-        Diary diary = diaryRetriever.getTodayDiary(user);
-        LocalDateTime now = LocalDateTime.now();
-        return getTakePictureInfo(diary, now);
-    }
-
     @Transactional(readOnly = true)
     public MonthDiaryDto getMonthDiaryByUser(String socialId, LocalDate date) {
         User user = userRetriever.getUserBySocialId(socialId);
@@ -63,7 +59,10 @@ public class DiaryService {
     public void enrollPictureInDiary(String socialId, LocalDateTime now, String imageUrl, Integer index, String comment) {
         User user = userRetriever.getUserBySocialId(socialId);
         Diary diary = diaryRetriever.getTodayDiary(user);
-        diary.checkEnrollPicturePossible(now, index);
+        Notification notification = notificationRetriever.getTodayNotification(user);
+        if(!notification.isPossibleEnrollPicture(now, index)) {
+            throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
+        }
         diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment);
     }
 
@@ -71,27 +70,22 @@ public class DiaryService {
     public void enrollDiary(String socialId, String imageUrl, String title) {
         User user = userRetriever.getUserBySocialId(socialId);
         Diary diary = diaryRetriever.getTodayDiary(user);
-        if (!diary.isFinished() && diary.getFourthPicture() == null) {
+        Notification notification = notificationRetriever.getTodayNotification(user);
+        if (!notification.isFinished() && diary.getFourthPicture() == null) {
             throw new BadRequestException(ErrorMessage.TODAY_NOT_FINISH);
         }
 
         diaryModifier.enrollDailyDiary(diary, imageUrl, title);
     }
 
-    private PictureCaptureInfoDto getTakePictureInfo(Diary diary, LocalDateTime now) {
-        List<LocalDateTime> timeSlots = List.of(
-                diary.getFirstTimeSlot(),
-                diary.getSecondTimeSlot(),
-                diary.getThirdTimeSlot(),
-                diary.getFourthTimeSlot()
-        );
-
-        for (int i = 0; i < timeSlots.size(); i++) {
-            LocalDateTime slot = timeSlots.get(i);
-            if (LocalDateTimeUtil.getIsPossiblePhotoCapture(slot, now)) {
-                return new PictureCaptureInfoDto(i + 1, slot.plusMinutes(EXPIRATION_MINUTES).toLocalTime());
+    @Transactional
+    public void createNextDayDiaries(LocalDate nextDay) {
+        List<User> allUser = userRetriever.getAllUsers();
+        for (User user : allUser) {
+            if (diaryRetriever.existsDiary(user, nextDay)) {
+                continue;
             }
+            diaryModifier.createDiary(nextDay, user);
         }
-        return new PictureCaptureInfoDto(-1, null);
     }
 }

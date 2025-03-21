@@ -29,14 +29,12 @@ public class AuthFacade {
 
     private final AuthService authService;
     private final UserService userService;
-
     private final SnsService snsService;
 
     public SignupResponse signup(SignupRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
 
-        String snsArnEndpoint = snsService.createEndpoint(request.fcmToken());
-        String endpoint = snsArnEndpoint.split("/")[3];
+        String snsEndpointArd = snsService.createEndpoint(request.fcmToken());
         Long id = userService.createUser(
                 socialLoginResponse.socialId(),
                 request.nickname(),
@@ -44,7 +42,8 @@ public class AuthFacade {
                 request.gender(),
                 request.dailyStartTime(),
                 request.dailyEndTime(),
-                endpoint
+                snsEndpointArd,
+                request.fcmToken()
         );
 
         JwtToken jwtToken = getJwtToken(socialLoginResponse.socialId());
@@ -55,6 +54,11 @@ public class AuthFacade {
     public LoginResponse login(LoginRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
         User loginUser = userService.getUserBySocialId(socialLoginResponse.socialId());
+        if (loginUser.isDifferentFcmToken(request.fcmToken())) {
+            String newSnsEndpointArn = snsService.createEndpoint(request.fcmToken());
+            loginUser.updateFcmToken(request.fcmToken());
+            loginUser.updateSnsEndpoint(newSnsEndpointArn);
+        }
         JwtToken jwtToken = getJwtToken(loginUser.getSocialId());
 
         return new LoginResponse(loginUser.getId(), jwtToken.accessToken(), jwtToken.refreshToken());

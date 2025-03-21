@@ -1,4 +1,4 @@
-package com.fourcut.diary.diary.util;
+package com.fourcut.diary.notification.util;
 
 import com.fourcut.diary.user.domain.User;
 import com.fourcut.diary.util.LocalDateTimeUtil;
@@ -10,15 +10,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-public class DiaryTimeSlotUtil {
+public class NotificationTimeSlotUtil {
 
     public static List<LocalDateTime> getRandomTimeSlot(User user, LocalDate currentDate) {
         LocalDateTime startTime = calculateStartTime(user, currentDate);
         LocalDateTime endTime = calculateEndTime(user, currentDate);
 
-        return LocalDateTimeUtil.generateRandomDateTimes(
-                startTime, endTime, Duration.ofHours(2), false
-        );
+        return LocalDateTimeUtil.generateRandomDateTimes(startTime, endTime, Duration.ofHours(2));
     }
 
     private static LocalDateTime calculateStartTime(User user, LocalDate currentDate) {
@@ -26,7 +24,7 @@ public class DiaryTimeSlotUtil {
     }
 
     private static LocalDateTime calculateEndTime(User user, LocalDate currentDate) {
-        if (user.getDailyStartTime().isAfter(user.getDailyEndTime())) {
+        if (user.isOverDay()) {
             return LocalDateTime.of(currentDate.plusDays(1), user.getDailyEndTime());
         }
         return LocalDateTime.of(currentDate, user.getDailyEndTime());

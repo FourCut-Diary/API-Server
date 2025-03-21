@@ -1,8 +1,8 @@
-package com.fourcut.diary.diary.dto.response;
+package com.fourcut.diary.notification.dto.response;
 
 import java.time.LocalTime;
 
-public record PhotoCaptureInfoResponse(
+public record PictureCaptureInfoResponse(
 
         Boolean isPossiblePhotoCapture,
 

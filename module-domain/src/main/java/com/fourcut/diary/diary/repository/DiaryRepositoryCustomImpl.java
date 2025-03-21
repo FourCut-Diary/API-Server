@@ -7,11 +7,13 @@ import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 import com.fourcut.diary.exception.model.BadRequestException;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor

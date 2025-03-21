@@ -11,6 +11,9 @@ public record LoginRequest(
         SocialType socialType,
 
         @NotBlank(message = ValidationMessage.INVALID_AUTHORIZATION_CODE)
-        String authorizationCode
+        String authorizationCode,
+
+        @NotBlank(message = ValidationMessage.INVALID_FCM_TOKEN)
+        String fcmToken
 ) {
 }

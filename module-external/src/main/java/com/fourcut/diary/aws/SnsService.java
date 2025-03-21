@@ -6,7 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.sns.SnsClient;
-import software.amazon.awssdk.services.sns.model.*;
+import software.amazon.awssdk.services.sns.model.CreatePlatformEndpointRequest;
+import software.amazon.awssdk.services.sns.model.CreatePlatformEndpointResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -15,43 +16,25 @@ public class SnsService {
 
     private final AwsConfig awsConfig;
 
-    public String createEndpoint(String token) {
-
+    public String createEndpoint(String fcmToken) {
         try (SnsClient snsClient = createSnsClient()) {
-
             CreatePlatformEndpointRequest request = CreatePlatformEndpointRequest.builder()
-                    .token(token)
                     .platformApplicationArn(awsConfig.getSnsPlatformApplicationArn())
+                    .token(fcmToken)
                     .build();
 
             CreatePlatformEndpointResponse response = snsClient.createPlatformEndpoint(request);
             return response.endpointArn();
-        } catch (SnsException exception) {
-            log.error(exception.getMessage());
-            return null;
-        }
-    }
-
-    public void topicPublish(String endpoint) {
-
-        log.info("푸시알림 발송: {}", awsConfig.getSnsTokenArn() + endpoint);
-        try (SnsClient snsClient = createSnsClient()) {
-            PublishRequest request = PublishRequest.builder()
-                    .targetArn(awsConfig.getSnsTokenArn() + endpoint)
-                    .message("send push notification")
-                    .build();
-
-            PublishResponse response = snsClient.publish(request);
-            log.info(response.toString());
-        } catch (SnsException exception) {
-            log.error(exception.getMessage());
+        } catch (Exception e) {
+            log.error("Failed to create SNS endpoint", e);
+            throw e;
         }
     }
 
     private SnsClient createSnsClient() {
         return SnsClient.builder()
                 .region(Region.AP_NORTHEAST_2)
-                .credentialsProvider(awsConfig.systemPropertyCredentialsProviderForSNS())
+                .credentialsProvider(awsConfig.credentialsProviderForSNS())
                 .build();
     }
 }
