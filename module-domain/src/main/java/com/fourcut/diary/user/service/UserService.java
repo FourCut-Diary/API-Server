@@ -20,10 +20,10 @@ public class UserService {
     private final UserRetriever userRetriever;
 
     @Transactional
-    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String fcmToken) {
+    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
 
         userRetriever.checkAlreadyExistedUser(socialId);
-        return userModifier.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, fcmToken);
+        return userModifier.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, snsEndpointArn, fcmToken);
     }
 
     @Transactional(readOnly = true)

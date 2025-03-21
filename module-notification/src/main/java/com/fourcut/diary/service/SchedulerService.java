@@ -20,9 +20,9 @@ public class SchedulerService {
     /**
      * 자정에 다음날의 일기 생성 및 푸시알림 시간 업데이트
      */
-    @Scheduled(cron = "59 59 23 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void createNextDayDiaryAndNotificationTime() {
-        LocalDate nextDay = LocalDate.now().plusDays(1);
+        LocalDate nextDay = LocalDate.now();
         diaryService.createNextDayDiaries(nextDay);
         notificationService.updateNotificationTime(nextDay);
     }

@@ -17,9 +17,6 @@ public class EnvironmentVariableConfig {
     @Value("${aws.sns.platform-application-arn}")
     private String snsPlatformApplicationArn;
 
-    @Value("${aws.sns.token-arn}")
-    private String snsTokenArn;
-
     @Value("${aws.s3.credentials.access-key}")
     private String s3AccessKey;
 

@@ -41,13 +41,16 @@ public class User extends AuditingTimeEntity {
     private LocalTime dailyEndTime;
 
     @Column(nullable = false)
+    private String snsEndpointArn;
+
+    @Column(nullable = false)
     private String fcmToken;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String fcmToken) {
+    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
         return User.builder()
                 .socialId(socialId)
                 .nickname(nickname)
@@ -55,9 +58,18 @@ public class User extends AuditingTimeEntity {
                 .gender(gender)
                 .dailyStartTime(dailyStartTime)
                 .dailyEndTime(dailyEndTime)
+                .snsEndpointArn(snsEndpointArn)
                 .fcmToken(fcmToken)
                 .role(RoleType.USER)
                 .build();
+    }
+
+    public boolean isDifferentFcmToken(String fcmToken) {
+        return this.fcmToken != null && !this.fcmToken.equals(fcmToken);
+    }
+
+    public void updateSnsEndpoint(String snsEndpointArn) {
+        this.snsEndpointArn = snsEndpointArn;
     }
 
     public void updateFcmToken(String fcmToken) {

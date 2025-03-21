@@ -16,9 +16,7 @@ public class NotificationTimeSlotUtil {
         LocalDateTime startTime = calculateStartTime(user, currentDate);
         LocalDateTime endTime = calculateEndTime(user, currentDate);
 
-        return LocalDateTimeUtil.generateRandomDateTimes(
-                startTime, endTime, Duration.ofHours(2), false
-        );
+        return LocalDateTimeUtil.generateRandomDateTimes(startTime, endTime, Duration.ofHours(2));
     }
 
     private static LocalDateTime calculateStartTime(User user, LocalDate currentDate) {
