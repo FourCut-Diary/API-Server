@@ -5,6 +5,7 @@ import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
 import com.fourcut.diary.jwt.JwtToken;
 import com.fourcut.diary.jwt.JwtTokenManager;
+import com.fourcut.diary.notification.service.NotificationService;
 import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.SocialStrategyProvider;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
@@ -29,6 +30,7 @@ public class AuthFacade {
 
     private final AuthService authService;
     private final UserService userService;
+    private final NotificationService notificationService;
     private final SnsService snsService;
 
     public SignupResponse signup(SignupRequest request) {
@@ -47,6 +49,7 @@ public class AuthFacade {
         );
 
         JwtToken jwtToken = getJwtToken(socialLoginResponse.socialId());
+        notificationService.createNotification(socialLoginResponse.socialId());
 
         return new SignupResponse(id, jwtToken.accessToken(), jwtToken.refreshToken());
     }

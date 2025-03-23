@@ -62,6 +62,8 @@ apple:
 
 # external
 aws:
+  lambda:
+    push-lambda-arn: test
   sns:
     access-key: test
     secret-key: test
@@ -71,3 +73,8 @@ aws:
       access-key: test
       secret-key: test
     bucket: test
+  event-bridge:
+    role-arn: test
+    credentials:
+      access-key: test
+      secret-key: test

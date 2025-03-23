@@ -9,9 +9,6 @@ import software.amazon.awssdk.auth.credentials.*;
 @RequiredArgsConstructor
 public class AwsConfig {
 
-    private final static String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
-    private final static String AWS_SECRET_ACCESS_KEY = "aws.secretAccessKey";
-
     private final EnvironmentVariableConfig environmentVariableConfig;
 
     @Bean
@@ -36,6 +33,14 @@ public class AwsConfig {
     }
 
     @Bean
+    public StaticCredentialsProvider credentialsProviderForEventBridge() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                environmentVariableConfig.getEventBridgeAccessKey(),
+                environmentVariableConfig.getEventBridgeSecretKey()
+        ));
+    }
+
+    @Bean
     public String getSnsPlatformApplicationArn() {
         return environmentVariableConfig.getSnsPlatformApplicationArn();
     }
@@ -43,5 +48,15 @@ public class AwsConfig {
     @Bean
     public String getS3BucketName() {
         return environmentVariableConfig.getS3Bucket();
+    }
+
+    @Bean
+    public String getPushLambdaArn() {
+        return environmentVariableConfig.getPushLambdaArn();
+    }
+
+    @Bean
+    public String getEventBridgeRoleArn() {
+        return environmentVariableConfig.getEventBridgeRoleArn();
     }
 }

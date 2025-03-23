@@ -23,6 +23,18 @@ public class EnvironmentVariableConfig {
     @Value("${aws.s3.credentials.secret-key}")
     private String s3SecretKey;
 
+    @Value("${aws.event-bridge.credentials.access-key}")
+    private String eventBridgeAccessKey;
+
+    @Value("${aws.event-bridge.credentials.secret-key}")
+    private String eventBridgeSecretKey;
+
+    @Value("${aws.event-bridge.role-arn}")
+    private String eventBridgeRoleArn;
+
     @Value("${aws.s3.bucket}")
     private String s3Bucket;
+
+    @Value("${aws.lambda.push-lambda-arn}")
+    private String pushLambdaArn;
 }

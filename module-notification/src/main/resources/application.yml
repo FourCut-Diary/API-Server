@@ -21,6 +21,13 @@ spring:
       host: test
       port: 6379
 
+# swagger
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 # auth
 jwt:
   secret: test
@@ -57,6 +64,8 @@ apple:
 
 # external
 aws:
+  lambda:
+    push-lambda-arn: test
   sns:
     access-key: test
     secret-key: test
@@ -66,3 +75,8 @@ aws:
       access-key: test
       secret-key: test
     bucket: test
+  event-bridge:
+    role-arn: test
+    credentials:
+      access-key: test
+      secret-key: test
