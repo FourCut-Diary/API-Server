@@ -25,6 +25,13 @@ public class NotificationService {
     private final NotificationModifier notificationModifier;
 
     @Transactional
+    public void createNotification(String socialId) {
+        User newUser = userRetriever.getUserBySocialId(socialId);
+        List<LocalDateTime> timeSlot = NotificationTimeSlotUtil.getRandomTimeSlot(newUser, LocalDate.now());
+        notificationModifier.createNotification(newUser, timeSlot);
+    }
+
+    @Transactional
     public PictureCaptureInfoDto getTakePictureInfoByUser(String socialId) {
         User user = userRetriever.getUserBySocialId(socialId);
         Notification notification = notificationRetriever.getTodayNotification(user);
@@ -39,6 +46,11 @@ public class NotificationService {
             List<LocalDateTime> timeSlots = NotificationTimeSlotUtil.getRandomTimeSlot(notification.getUser(), nextDay);
             notificationModifier.updateNextDayNotificationTime(notification, timeSlots);
         });
+    }
+
+    @Transactional(readOnly = true)
+    public List<Notification> getAllNotifications() {
+        return notificationRetriever.getAllNotifications();
     }
 
     private PictureCaptureInfoDto getTakePictureInfo(Notification notification, LocalDateTime now) {
