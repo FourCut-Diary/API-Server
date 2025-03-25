@@ -36,3 +36,7 @@ services:
     restart: always
     networks:
       - fourcut-diary-network
+
+networks:
+  fourcut-diary-network:
+    external: true
