@@ -34,8 +34,7 @@ public class UserRetriever {
         }
     }
 
-    public List<User> getUserIdListWithExpiredDailyEndTime(LocalTime currentTime) {
-
-        return userRepository.findAllUserWithExpiredDailyEndTime(currentTime);
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 }

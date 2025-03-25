@@ -1,78 +1,111 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-gradle
-
-name: API-Server CD
+name: Deploy to Production Instance
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ main ]
+
+env:
+  SPRING_PROFILES_ACTIVE: prod
+  ECR_HOST: ${{ secrets.ECR_HOST }}
+  ECR_API_NAME: ${{ secrets.ECR_API_NAME }}
+  ECR_NOTIFICATION_NAME: ${{ secrets.ECR_NOTIFICATION_NAME }}
+  ECR_API_REPO: ${{ secrets.ECR_HOST }}/${{ secrets.ECR_API_NAME }}
+  ECR_NOTIFICATION_REPO: ${{ secrets.ECR_HOST }}/${{ secrets.ECR_NOTIFICATION_NAME }}
 
 jobs:
-  ci-workflow:
+  build:
+    name: CD Pipeline
     runs-on: ubuntu-latest
-    env:
-      working-directory: ./
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 1.17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: 'Check Java Version'
+        run: |
+          java --version
+
+      - name: 'Configure AWS credentials'
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+
+      - name: make application.yml 파일 생성
+        run: |
+          touch ./module-api/src/main/resources/application.yml
+          echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./module-api/src/main/resources/application.yml
+          
+          touch ./module-notification/src/main/resources/application.yml
+          echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./module-notification/src/main/resources/application.yml
     
-    - name: checkout
-      uses: actions/checkout@v3
-    
-    - name: Set up JDK 17
-      uses: actions/setup-java@v3
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-    
-    - name: make application.yml 파일 생성
-      run: |
-        ## create application.yml
-        cd ./module-api/src/main/resources
+        shell: bash
 
-        # application.yml 파일 생성
-        touch ./application-prod.yml
+      - name: 'Build with Gradle'
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build
+        shell: bash
 
-        # GitHub-Actions 에서 설정한 값을 application.yml 파일에 쓰기
-        echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./application-prod.yml
+      - name: 'Login to ECR'
+        run: |
+          aws ecr-public get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_HOST
 
-      shell: bash
-        
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      
-    - name: Build with Gradle
-      run: ./gradlew build
+      - name: Docker Image Build & Push - API
+        run: |
+          docker build -t $ECR_API_NAME -f Dockerfile.api .
+          docker tag $ECR_API_NAME:latest $ECR_API_REPO
+          docker push $ECR_API_REPO
 
-    - name: docker build 가능하도록 환경 설정
-      uses: docker/setup-buildx-action@v2.9.1
+      - name: Docker Image Build & Push - Notification
+        run: |
+          docker build -t $ECR_NOTIFICATION_NAME -f Dockerfile.notification .
+          docker tag $ECR_NOTIFICATION_NAME:latest $ECR_NOTIFICATION_REPO
+          docker push $ECR_NOTIFICATION_REPO
 
-    - name: docker hub에로그인
-      uses: docker/login-action@v2.2.0
-      with:
-        username: ${{ secrets.DOCKERHUB_LOGIN_USER }}
-        password: ${{ secrets.DOCKERHUB_LOGIN_ACCESS_TOKEN }}
+      - name: 'Send docker-compose.yml to EC2 Instance'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_RELEASE_SERVER_IP }}
+          username: ${{ secrets.RELEASE_SERVER_USER }}
+          key: ${{ secrets.PROD_RELEASE_SERVER_KEY }}
+          source: "./docker-compose.yml"
+          target: "/home/ec2-user/fourcut-diary/"
 
-    - name: docker image 빌드 및 푸시
-      run: |
-        docker build --platform linux/amd64 -t lsh328328/fourcutdiary .
-        docker push lsh328328/fourcutdiary
-      working-directory: ${{ env.working-directory }}
+      - name: 'Send deploy script to EC2 Instance'
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.PROD_RELEASE_SERVER_IP }}
+          username: ${{ secrets.RELEASE_SERVER_USER }}
+          key: ${{ secrets.PROD_RELEASE_SERVER_KEY }}
+          source: "./scripts/"
+          target: "/home/ec2-user/fourcut-diary/"
 
-  cd-workflow:      
-    needs: ci-workflow
-    runs-on: ubuntu-latest
+      - name: 'Get current time'
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYY-MM-DDTHH-mm-ss
+          utcOffset: "+09:00"
 
-    steps:    
-    - name: 도커 컨테이너 실행
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.RELEASE_SERVER_IP }}
-        username: ${{ secrets.RELEASE_SERVER_USER }}
-        key: ${{ secrets.RELEASE_SERVER_KEY }}
-        script: |
-          cd ~
-          sudo ./deploy.sh
+      - name: Docker Container Run on EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_RELEASE_SERVER_IP }}
+          username: ${{ secrets.RELEASE_SERVER_USER }}
+          key: ${{ secrets.PROD_RELEASE_SERVER_KEY }}
+          script: |
+            cd ~/fourcut-diary
+            sudo docker pull $ECR_API_REPO
+            sudo docker pull $ECR_NOTIFICATION_REPO
+            sudo chmod +x ./scripts/*.sh
+            ./scripts/deploy-api.sh
+            ./scripts/deploy-notification.sh
+            docker image prune -f

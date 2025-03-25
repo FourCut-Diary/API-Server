@@ -1,0 +1,82 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: test
+    username: test
+    password: test
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+  data:
+    redis:
+      host: test
+      port: 6379
+
+# swagger
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+# auth
+jwt:
+  secret: test
+  access-token:
+    expiration-time: test
+  refresh-token:
+    expiration-time: test
+
+management:
+  endpoints:
+    enabled-by-default: false
+    jmx:
+      exposure:
+        exclude: test
+    web:
+      exposure:
+        include: test
+      base-path: /test
+  endpoint:
+    health:
+      enabled: true
+
+kakao:
+  clientId: test
+  redirectUri: test
+
+apple:
+  grant-type: test
+  team-id: test
+  client-id: test
+  key-id: test
+  audience: test
+  private-key: test
+
+# external
+aws:
+  lambda:
+    push-lambda-arn: test
+  sns:
+    access-key: test
+    secret-key: test
+    platform-application-arn: test
+  s3:
+    credentials:
+      access-key: test
+      secret-key: test
+    bucket: test
+  event-bridge:
+    role-arn: test
+    credentials:
+      access-key: test
+      secret-key: test

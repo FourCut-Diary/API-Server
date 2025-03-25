@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -23,8 +24,11 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
     private static final List<String> AUTH_WHITELIST = List.of(
             "/user/social-signup",
             "/user/social-login",
-            "/secret/info/health"
+            "/secret/info/health",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     );
+    private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     protected void doFilterInternal(
@@ -35,7 +39,7 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestURI = request.getRequestURI();
 
-        if (AUTH_WHITELIST.contains(requestURI)) {
+        if (isWhitelisted(requestURI)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -56,5 +60,9 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
                 .filter(token -> token.substring(0, 7).equalsIgnoreCase("Bearer "))
                 .map(token -> token.substring(7))
                 .orElse(null);
+    }
+
+    private boolean isWhitelisted(String requestURI) {
+        return AUTH_WHITELIST.stream().anyMatch(pattern -> pathMatcher.match(pattern, requestURI));
     }
 }

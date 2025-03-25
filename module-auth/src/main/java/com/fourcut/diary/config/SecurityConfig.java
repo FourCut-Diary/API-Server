@@ -22,7 +22,9 @@ public class SecurityConfig {
     private static final String[] AUTH_WHITELIST = {
             "/user/social-signup",
             "/user/social-login",
-            "/secret/info/health"
+            "/secret/info/health",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
     };
 
     @Bean

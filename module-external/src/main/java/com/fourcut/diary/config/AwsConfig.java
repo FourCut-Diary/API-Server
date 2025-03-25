@@ -3,29 +3,41 @@ package com.fourcut.diary.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import software.amazon.awssdk.auth.credentials.SystemPropertyCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.*;
 
 @Configuration
 @RequiredArgsConstructor
 public class AwsConfig {
 
-    private final static String AWS_ACCESS_KEY_ID = "aws.accessKeyId";
-    private final static String AWS_SECRET_ACCESS_KEY = "aws.secretAccessKey";
-
     private final EnvironmentVariableConfig environmentVariableConfig;
 
     @Bean
-    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForLambda() {
-        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getLambdaAccessKey());
-        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getLambdaSecretKey());
-        return SystemPropertyCredentialsProvider.create();
+    public AwsCredentialsProvider awsCredentialsProvider() {
+        return DefaultCredentialsProvider.create();
     }
 
     @Bean
-    public SystemPropertyCredentialsProvider systemPropertyCredentialsProviderForSNS() {
-        System.setProperty(AWS_ACCESS_KEY_ID, environmentVariableConfig.getSnsAccessKey());
-        System.setProperty(AWS_SECRET_ACCESS_KEY, environmentVariableConfig.getSnsSecretKey());
-        return SystemPropertyCredentialsProvider.create();
+    public StaticCredentialsProvider credentialsProviderForSNS() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                environmentVariableConfig.getSnsAccessKey(),
+                environmentVariableConfig.getSnsSecretKey()
+        ));
+    }
+
+    @Bean
+    public StaticCredentialsProvider credentialsProviderForS3() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                environmentVariableConfig.getS3AccessKey(),
+                environmentVariableConfig.getS3SecretKey()
+        ));
+    }
+
+    @Bean
+    public StaticCredentialsProvider credentialsProviderForEventBridge() {
+        return StaticCredentialsProvider.create(AwsBasicCredentials.create(
+                environmentVariableConfig.getEventBridgeAccessKey(),
+                environmentVariableConfig.getEventBridgeSecretKey()
+        ));
     }
 
     @Bean
@@ -34,7 +46,17 @@ public class AwsConfig {
     }
 
     @Bean
-    public String getSnsTokenArn() {
-        return environmentVariableConfig.getSnsTokenArn();
+    public String getS3BucketName() {
+        return environmentVariableConfig.getS3Bucket();
+    }
+
+    @Bean
+    public String getPushLambdaArn() {
+        return environmentVariableConfig.getPushLambdaArn();
+    }
+
+    @Bean
+    public String getEventBridgeRoleArn() {
+        return environmentVariableConfig.getEventBridgeRoleArn();
     }
 }

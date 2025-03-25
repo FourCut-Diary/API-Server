@@ -16,14 +16,14 @@ import java.time.temporal.ChronoUnit;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserCreator userCreator;
+    private final UserModifier userModifier;
     private final UserRetriever userRetriever;
 
     @Transactional
-    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsArnEndpoint) {
+    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
 
         userRetriever.checkAlreadyExistedUser(socialId);
-        return userCreator.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, snsArnEndpoint);
+        return userModifier.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, snsEndpointArn, fcmToken);
     }
 
     @Transactional(readOnly = true)
