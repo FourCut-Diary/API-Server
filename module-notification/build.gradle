@@ -1,13 +1,11 @@
-bootJar {
-    enabled = false
-}
-
-jar {
-    enabled = true
-}
-
 dependencies {
     implementation project(':module-common')
     implementation project(':module-domain')
     implementation project(':module-external')
+}
+
+bootJar{
+    archivesBaseName = 'fourcut-diary'
+    archiveFileName = 'fourcut-diary-notification.jar'
+    archiveVersion = "1.0.0"
 }
