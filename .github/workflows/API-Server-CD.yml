@@ -1,26 +1,16 @@
 name: Deploy to Production Instance
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-        type: choice
-        options:
-          - info
-          - warning
-          - debug
-  repository_dispatch:
-    types: [deploy-to-prod-event]
   push:
     branches: [ main ]
+
 env:
   SPRING_PROFILES_ACTIVE: prod
-  ECR_APP_NAME: ${{ secrets.ECR_APP_NAME }}
-  ECR_REPO: ${{ secrets.ECR_HOST }}/${{ secrets.ECR_APP_NAME }}
   ECR_HOST: ${{ secrets.ECR_HOST }}
+  ECR_API_NAME: ${{ secrets.ECR_API_NAME }}
+  ECR_NOTIFICATION_NAME: ${{ secrets.ECR_NOTIFICATION_NAME }}
+  ECR_API_REPO: ${{ secrets.ECR_HOST }}/${{ secrets.ECR_API_NAME }}
+  ECR_NOTIFICATION_REPO: ${{ secrets.ECR_HOST }}/${{ secrets.ECR_NOTIFICATION_NAME }}
 
 jobs:
   build:
@@ -61,18 +51,24 @@ jobs:
       - name: 'Build with Gradle'
         run: |
           chmod +x ./gradlew
-          ./gradlew clean build -x test
+          ./gradlew clean build
         shell: bash
 
       - name: 'Login to ECR'
         run: |
           aws ecr-public get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_HOST
 
-      - name: 'Docker Image Build & Push'
+      - name: Docker Image Build & Push - API
         run: |
-          docker build -t $ECR_APP_NAME .
-          docker tag $ECR_APP_NAME:latest $ECR_REPO
-          docker push $ECR_REPO
+          docker build -t $ECR_API_NAME -f Dockerfile.api .
+          docker tag $ECR_API_NAME:latest $ECR_API_REPO
+          docker push $ECR_API_REPO
+
+      - name: Docker Image Build & Push - Notification
+        run: |
+          docker build -t $ECR_NOTIFICATION_NAME -f Dockerfile.notification .
+          docker tag $ECR_NOTIFICATION_NAME:latest $ECR_NOTIFICATION_REPO
+          docker push $ECR_NOTIFICATION_REPO
 
       - name: 'Send docker-compose.yml to EC2 Instance'
         uses: appleboy/scp-action@master
@@ -99,16 +95,17 @@ jobs:
           format: YYYY-MM-DDTHH-mm-ss
           utcOffset: "+09:00"
 
-      - name: 'Docker Container Run'
+      - name: Docker Container Run on EC2
         uses: appleboy/ssh-action@master
-
         with:
           host: ${{ secrets.PROD_RELEASE_SERVER_IP }}
           username: ${{ secrets.RELEASE_SERVER_USER }}
           key: ${{ secrets.PROD_RELEASE_SERVER_KEY }}
           script: |
-            cd ~
-            sudo docker pull $ECR_REPO
-            sudo chmod +x ./fourcut-diary/scripts/*.sh
-            ./fourcut-diary/scripts/deploy.sh
+            cd ~/fourcut-diary
+            sudo docker pull $ECR_API_REPO
+            sudo docker pull $ECR_NOTIFICATION_REPO
+            sudo chmod +x ./scripts/*.sh
+            ./scripts/deploy-api.sh
+            ./scripts/deploy-notification.sh
             docker image prune -f
