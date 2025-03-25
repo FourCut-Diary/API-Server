@@ -1,0 +1,7 @@
+FROM amd64/amazoncorretto:17
+
+WORKDIR /app
+
+COPY ./module-api/build/libs/fourcut-diary-api.jar /app/fourcut-diary-api.jar
+
+CMD ["java", "-Duser.timezone=Asia/Seoul", "-jar", "-Dspring.profiles.active=prod", "fourcut-diary-api.jar"]
