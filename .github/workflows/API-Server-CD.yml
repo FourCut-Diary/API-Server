@@ -68,7 +68,6 @@ jobs:
         run: |
           aws ecr-public get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin $ECR_HOST
 
-
       - name: 'Docker Image Build & Push'
         run: |
           docker build -t $ECR_APP_NAME .
