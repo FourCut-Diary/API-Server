@@ -23,6 +23,9 @@ public class SecurityConfig {
             "/user/social-signup",
             "/user/social-login",
             "/secret/info/health",
+            "/secret/info/info",
+            "/secret/info/metrics",
+            "/secret/info/prometheus",
             "/swagger-ui/**",
             "/v3/api-docs/**"
     };
