@@ -25,6 +25,9 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
             "/user/social-signup",
             "/user/social-login",
             "/secret/info/health",
+            "/secret/info/info",
+            "/secret/info/metrics",
+            "/secret/info/prometheus",
             "/swagger-ui/**",
             "/v3/api-docs/**"
     );
