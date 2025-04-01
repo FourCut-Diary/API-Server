@@ -45,8 +45,15 @@ management:
         include: test
       base-path: /test
   endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
     health:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 kakao:
   clientId: test
