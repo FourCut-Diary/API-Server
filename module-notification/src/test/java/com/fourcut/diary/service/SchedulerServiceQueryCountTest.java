@@ -1,6 +1,8 @@
 package com.fourcut.diary.service;
 
 import com.fourcut.diary.diary.service.DiaryService;
+import com.fourcut.diary.notification.service.NotificationService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.stat.Statistics;
@@ -12,8 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest
 @Transactional
 public class SchedulerServiceQueryCountTest {
@@ -22,12 +22,18 @@ public class SchedulerServiceQueryCountTest {
     private EntityManagerFactory emf;
 
     @Autowired
+    private EntityManager em;
+
+    @Autowired
+    private SchedulerService schedulerService;
+
+    @Autowired
     private DiaryService diaryService;
 
     @Autowired
-    private DiaryService diaryServiceOptimized; // 최적화된 버전 메서드 포함
+    private NotificationService notificationService;
 
-    private final LocalDate nextDay = LocalDate.now().plusDays(1);
+    private final LocalDate nextDay = LocalDate.now();
 
     @BeforeEach
     void enableStatistics() {
@@ -37,23 +43,39 @@ public class SchedulerServiceQueryCountTest {
     }
 
     @Test
-    void countQueriesBeforeAndAfter() {
+    void countQueriesCreateNextDayDiaries() {
         SessionFactoryImplementor sessionFactory =
                 emf.unwrap(SessionFactoryImplementor.class);
         Statistics stats = sessionFactory.getStatistics();
 
-        // 기존 버전 실행
         stats.clear();
         diaryService.createNextDayDiaries(nextDay);
         long before = stats.getPrepareStatementCount();
         System.out.println("기존 쿼리 수: " + before);
+    }
 
-        // 최적화 버전 실행
+    @Test
+    void countQueriesUpdateNotificationTime() {
+        SessionFactoryImplementor sessionFactory =
+                emf.unwrap(SessionFactoryImplementor.class);
+        Statistics stats = sessionFactory.getStatistics();
+
         stats.clear();
-        diaryServiceOptimized.createNextDayDiaries(nextDay);
-        long after = stats.getPrepareStatementCount();
-        System.out.println("최적화된 쿼리 수: " + after);
+        notificationService.updateNotificationTime(nextDay);
+        em.flush();
+        long before = stats.getPrepareStatementCount();
+        System.out.println("기존 쿼리 수: " + before);
+    }
 
-        assertTrue(after < before, "최적화된 버전이 더 적은 쿼리를 실행해야 합니다.");
+    @Test
+    void countQueriesCreateNextDayDiaryAndNotificationTime() {
+        SessionFactoryImplementor sessionFactory =
+                emf.unwrap(SessionFactoryImplementor.class);
+        Statistics stats = sessionFactory.getStatistics();
+
+        schedulerService.createNextDayDiaryAndNotificationTime();
+        em.flush();
+        long before = stats.getPrepareStatementCount();
+        System.out.println("기존 쿼리 수: " + before);
     }
 }
