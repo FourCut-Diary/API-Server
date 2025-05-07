@@ -8,7 +8,7 @@ import com.fourcut.diary.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -34,7 +34,7 @@ public class UserRetriever {
         }
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsersWithoutDiary(LocalDate nextDay) {
+        return userRepository.findAllWithoutDiaryOn(nextDay);
     }
 }

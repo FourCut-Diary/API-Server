@@ -80,12 +80,9 @@ public class DiaryService {
 
     @Transactional
     public void createNextDayDiaries(LocalDate nextDay) {
-        List<User> allUser = userRetriever.getAllUsers();
-        for (User user : allUser) {
-            if (diaryRetriever.existsDiary(user, nextDay)) {
-                continue;
-            }
-            diaryModifier.createDiary(nextDay, user);
+        List<User> allUser = userRetriever.getAllUsersWithoutDiary(nextDay);
+        for (User u : allUser) {
+            diaryModifier.createDiary(nextDay, u);
         }
     }
 }

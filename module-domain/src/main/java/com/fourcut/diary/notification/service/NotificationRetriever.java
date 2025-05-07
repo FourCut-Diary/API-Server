@@ -37,4 +37,8 @@ public class NotificationRetriever {
     public List<Notification> getAllNotifications() {
         return notificationRepository.findAll();
     }
+
+    public List<Notification> getAllNotificationsWithUser() {
+        return notificationRepository.findAllWithUser();
+    }
 }
