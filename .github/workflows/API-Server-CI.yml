@@ -42,7 +42,7 @@ jobs:
         echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./module-notification/src/main/resources/application.yml
 
         touch ./module-notification/src/test/resources/application.yml
-        echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./module-notification/src/main/resources/application-local.yml
+        echo "${{ secrets.FOURCUTDIARY_APPLICATION }}" >> ./module-notification/src/test/resources/application-local.yml
 
       shell: bash
         
