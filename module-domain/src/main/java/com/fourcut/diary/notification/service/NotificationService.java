@@ -41,7 +41,7 @@ public class NotificationService {
 
     @Transactional
     public void updateNotificationTime(LocalDate nextDay) {
-        List<Notification> notifications = notificationRetriever.getAllNotifications();
+        List<Notification> notifications = notificationRetriever.getAllNotificationsWithUser();
         notifications.forEach(notification -> {
             List<LocalDateTime> timeSlots = NotificationTimeSlotUtil.getRandomTimeSlot(notification.getUser(), nextDay);
             notificationModifier.updateNextDayNotificationTime(notification, timeSlots);
