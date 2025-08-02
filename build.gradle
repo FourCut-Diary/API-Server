@@ -34,6 +34,9 @@ subprojects {
 	dependencies { // 모든 하위 모듈에 추가 될 의존성 목록입니다.
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 
+		// log
+		implementation 'org.springframework.boot:spring-boot-starter-aop'
+
 		// Test
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		testImplementation 'com.h2database:h2'
