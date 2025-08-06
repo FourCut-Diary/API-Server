@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="LOG_PATH" value="logs"/>
+
+    <!-- MDC로 traceId 사용 -->
+    <conversionRule conversionWord="X" converterClass="ch.qos.logback.classic.pattern.MDCConverter"/>
+
+    <!-- 콘솔 로그 (색상 출력) -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n%throwable</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Request 로그 -->
+    <appender name="REQUEST_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/request.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/request.%d{yyyy-MM}.log</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [TRACE_ID:%X{traceId}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Response 로그 -->
+    <appender name="RESPONSE_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/response.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/response.%d{yyyy-MM}.log</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [TRACE_ID:%X{traceId}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Error 로그 -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/error.%d{yyyy-MM}.log</fileNamePattern>
+            <maxHistory>12</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - [TRACE_ID:%X{traceId}] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로그 레벨 별로 분기 -->
+    <logger name="com.fourcut.diary.logging.request" level="INFO" additivity="false">
+        <appender-ref ref="REQUEST_FILE"/>
+    </logger>
+
+    <logger name="com.fourcut.diary.logging.response" level="INFO" additivity="false">
+        <appender-ref ref="RESPONSE_FILE"/>
+    </logger>
+
+    <logger name="com.fourcut.diary.logging.error" level="ERROR" additivity="false">
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- 공통 출력 -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+</configuration>
