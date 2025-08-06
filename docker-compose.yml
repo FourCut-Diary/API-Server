@@ -13,7 +13,7 @@ services:
     networks:
       - fourcut-diary-network
     volumes:
-      - /home/ec2-user/logs/api-blue:/app/logs
+      - /home/ec2-user/logs:/app/logs
 
   fourcut-diary-api-green:
     image: ${FOURCUTDIARY_ECR_API_REPO}
@@ -27,7 +27,7 @@ services:
     networks:
       - fourcut-diary-network
     volumes:
-      - /home/ec2-user/logs/api-green:/app/logs
+      - /home/ec2-user/logs:/app/logs
 
   fourcut-diary-notification:
     image: ${FOURCUTDIARY_ECR_NOTIFICATION_REPO}
