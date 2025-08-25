@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fourcut.diary.util.StringUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -23,9 +24,10 @@ import java.util.stream.Collectors;
 @Aspect
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class RequestResponseLoggingAspect {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
     private static final Logger requestLogger = LoggerFactory.getLogger("com.fourcut.diary.logging.request");
     private static final Logger responseLogger = LoggerFactory.getLogger("com.fourcut.diary.logging.response");
     private static final Logger errorLogger = LoggerFactory.getLogger("com.fourcut.diary.logging.error");
