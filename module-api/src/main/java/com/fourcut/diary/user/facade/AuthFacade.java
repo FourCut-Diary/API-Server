@@ -1,6 +1,7 @@
 package com.fourcut.diary.user.facade;
 
 import com.fourcut.diary.auth.service.AuthService;
+import com.fourcut.diary.aws.EventBridgeService;
 import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
 import com.fourcut.diary.jwt.JwtToken;
@@ -21,6 +22,9 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthFacade {
@@ -31,6 +35,7 @@ public class AuthFacade {
     private final AuthService authService;
     private final UserService userService;
     private final NotificationService notificationService;
+    private final EventBridgeService eventBridgeService;
     private final SnsService snsService;
 
     public SignupResponse signup(SignupRequest request) {
@@ -50,7 +55,8 @@ public class AuthFacade {
         );
 
         JwtToken jwtToken = getJwtToken(socialLoginResponse.socialId());
-        notificationService.createNotification(socialLoginResponse.socialId());
+        List<LocalDateTime> timeSlot = notificationService.createNotification(socialLoginResponse.socialId());
+        eventBridgeService.enrollPushNotificationScheduler(id, timeSlot);
 
         return new SignupResponse(id, jwtToken.accessToken(), jwtToken.refreshToken());
     }

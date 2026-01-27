@@ -28,10 +28,12 @@ public class NotificationService {
     private final NotificationModifier notificationModifier;
 
     @Transactional
-    public void createNotification(String socialId) {
+    public List<LocalDateTime> createNotification(String socialId) {
         User newUser = userRetriever.getUserBySocialId(socialId);
         List<LocalDateTime> timeSlot = NotificationTimeSlotUtil.getRandomTimeSlot(newUser, LocalDate.now());
         notificationModifier.createNotification(newUser, timeSlot);
+
+        return timeSlot;
     }
 
     @Transactional
