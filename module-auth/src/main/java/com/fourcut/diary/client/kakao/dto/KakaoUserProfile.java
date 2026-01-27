@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record KakaoUserProfile(
 
-        String accountEmail
+        String accountEmail,
+        String profileImageUrl
 ) {
 }

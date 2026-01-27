@@ -44,6 +44,7 @@ public class AuthFacade {
                 request.gender(),
                 request.dailyStartTime(),
                 request.dailyEndTime(),
+                socialLoginResponse.profileImageUrl(),
                 snsEndpointArd,
                 request.fcmToken()
         );

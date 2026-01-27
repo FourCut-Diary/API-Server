@@ -1,8 +1,6 @@
 package com.fourcut.diary.strategy.kakao;
 
-import com.fourcut.diary.client.kakao.KakaoAuthClient;
 import com.fourcut.diary.client.kakao.KakaoUserClient;
-import com.fourcut.diary.client.kakao.dto.KakaoOAuth2TokenResponse;
 import com.fourcut.diary.client.kakao.dto.KakaoUserResponse;
 import com.fourcut.diary.constant.ErrorMessage;
 import com.fourcut.diary.exception.model.BadRequestException;
@@ -10,50 +8,34 @@ import com.fourcut.diary.strategy.SocialStrategy;
 import com.fourcut.diary.strategy.dto.SocialLoginResponse;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class KakaoSocialService implements SocialStrategy {
 
-    private static final String GRANT_TYPE = "authorization_code";
-
-    @Value("${kakao.clientId}")
-    private String kakaoClientId;
-
-    @Value("${kakao.redirectUri}")
-    private String kakaoRedirectUri;
-
-    private final KakaoAuthClient kakaoAuthClient;
     private final KakaoUserClient kakaoUserClient;
 
     @Override
-    public SocialLoginResponse getSocialInfo(String authorizationCode) {
-        String kakaoAccessToken = getOAuth2Authentication(authorizationCode);
+    public SocialLoginResponse getSocialInfo(String accessToken) {
+        String bearerToken = "Bearer " + accessToken;
 
         try {
-            KakaoUserResponse kakaoUser = kakaoUserClient.getUserInformation(kakaoAccessToken);
+            KakaoUserResponse kakaoUser = kakaoUserClient.getUserInformation(bearerToken);
 
-            return new SocialLoginResponse(kakaoUser.id());
-        } catch (FeignException exception) {
-            throw new BadRequestException(ErrorMessage.INVALID_EXTERNAL_API_DATA);
-        }
-    }
+            String profileImageUrl = kakaoUser.kakaoAccount() != null
+                    && kakaoUser.kakaoAccount().profile() != null
+                    ? kakaoUser.kakaoAccount().profile().profileImageUrl()
+                    : null;
 
-    private String getOAuth2Authentication(
-            final String authorizationCode
-    ) {
+            if (profileImageUrl != null && profileImageUrl.startsWith("http://")) {
+                profileImageUrl = profileImageUrl.replace("http://", "https://");
+            }
 
-        try {
-            KakaoOAuth2TokenResponse response = kakaoAuthClient.getOAuth2AccessToken(
-                    GRANT_TYPE,
-                    kakaoClientId,
-                    kakaoRedirectUri,
-                    authorizationCode
+            return new SocialLoginResponse(
+                    kakaoUser.id(),
+                    profileImageUrl
             );
-
-            return "Bearer " + response.accessToken();
         } catch (FeignException exception) {
             throw new BadRequestException(ErrorMessage.INVALID_EXTERNAL_API_DATA);
         }

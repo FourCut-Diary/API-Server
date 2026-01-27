@@ -50,7 +50,7 @@ public class User extends AuditingTimeEntity {
     @Enumerated(EnumType.STRING)
     private RoleType role;
 
-    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
+    public static User newInstance(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String profileImage, String snsEndpointArn, String fcmToken) {
         return User.builder()
                 .socialId(socialId)
                 .nickname(nickname)
@@ -58,6 +58,7 @@ public class User extends AuditingTimeEntity {
                 .gender(gender)
                 .dailyStartTime(dailyStartTime)
                 .dailyEndTime(dailyEndTime)
+                .profileImage(profileImage)
                 .snsEndpointArn(snsEndpointArn)
                 .fcmToken(fcmToken)
                 .role(RoleType.USER)
