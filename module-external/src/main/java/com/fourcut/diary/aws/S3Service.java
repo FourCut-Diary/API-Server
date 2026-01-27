@@ -73,6 +73,29 @@ public class S3Service {
         }
     }
 
+    /**
+     * CDN URL 생성 (CloudFlare Worker 사용)
+     * 클라이언트는 JWT 토큰으로 인증하여 이미지에 접근
+     *
+     * @param imageUrlList S3 원본 URL 리스트
+     * @return CDN URL 리스트
+     */
+    public List<String> createCdnUrls(List<String> imageUrlList) {
+        String cdnBaseUrl = awsConfig.getCdnBaseUrl();
+
+        // CDN URL이 설정되지 않은 경우 기존 presigned URL 방식 사용 (하위 호환성)
+        if (cdnBaseUrl == null || cdnBaseUrl.isBlank()) {
+            return createGetPresignedUrl(imageUrlList);
+        }
+
+        return imageUrlList.stream()
+                .map(imageUrl -> {
+                    String objectKey = extractObjectKey(imageUrl);
+                    return cdnBaseUrl + "/" + objectKey;
+                })
+                .toList();
+    }
+
     public void checkImageUrlExists(String imageUrl) {
 
         try (S3Client s3Client = createS3Client()) {

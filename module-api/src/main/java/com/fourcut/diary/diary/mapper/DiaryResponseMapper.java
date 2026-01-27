@@ -30,12 +30,12 @@ public class DiaryResponseMapper {
         if (diary.getThirdPicture() != null) nonEmptyUrls.add(diary.getThirdPicture());
         if (diary.getFourthPicture() != null) nonEmptyUrls.add(diary.getFourthPicture());
 
-        // presigned URL 생성
+        // CDN URL 생성 (JWT 인증 사용)
         Map<String, String> urlMapping = new HashMap<>();
         if (!nonEmptyUrls.isEmpty()) {
-            List<String> presignedUrls = s3Service.createGetPresignedUrl(nonEmptyUrls);
+            List<String> cdnUrls = s3Service.createCdnUrls(nonEmptyUrls);
             for (int i = 0; i < nonEmptyUrls.size(); i++) {
-                urlMapping.put(nonEmptyUrls.get(i), presignedUrls.get(i));
+                urlMapping.put(nonEmptyUrls.get(i), cdnUrls.get(i));
             }
         }
 
@@ -58,12 +58,12 @@ public class DiaryResponseMapper {
     }
 
     public DiaryDetailResponse toDiaryDetailResponse(Diary diary) {
-        String presignedUrl = diary.getImageUrl() != null
-                ? s3Service.createGetPresignedUrl(List.of(diary.getImageUrl())).get(0)
+        String cdnUrl = diary.getImageUrl() != null
+                ? s3Service.createCdnUrls(List.of(diary.getImageUrl())).get(0)
                 : null;
         return new DiaryDetailResponse(
                 diary.getDate(),
-                presignedUrl
+                cdnUrl
         );
     }
 
@@ -75,9 +75,9 @@ public class DiaryResponseMapper {
 
         Map<String, String> urlMapping = new HashMap<>();
         if (!allImageUrls.isEmpty()) {
-            List<String> presignedUrls = s3Service.createGetPresignedUrl(allImageUrls);
+            List<String> cdnUrls = s3Service.createCdnUrls(allImageUrls);
             for (int i = 0; i < allImageUrls.size(); i++) {
-                urlMapping.put(allImageUrls.get(i), presignedUrls.get(i));
+                urlMapping.put(allImageUrls.get(i), cdnUrls.get(i));
             }
         }
 
