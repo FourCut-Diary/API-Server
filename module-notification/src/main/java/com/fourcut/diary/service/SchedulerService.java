@@ -26,7 +26,7 @@ public class SchedulerService {
     /**
      * 자정에 다음날의 일기 생성 및 푸시알림 시간 업데이트
      */
-    @Scheduled(cron = "0 54 14 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void createNextDayDiaryAndNotificationTime() {
         // 3일 이상 지난 EventBridge Scheduler 삭제
         eventBridgeService.deletePastSchedules();
