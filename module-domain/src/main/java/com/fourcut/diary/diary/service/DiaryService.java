@@ -63,7 +63,7 @@ public class DiaryService {
         if(!notification.isPossibleEnrollPicture(now, index)) {
             throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
         }
-        diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment);
+        diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment, now);
     }
 
     @Transactional

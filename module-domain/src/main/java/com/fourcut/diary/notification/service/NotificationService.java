@@ -1,5 +1,7 @@
 package com.fourcut.diary.notification.service;
 
+import com.fourcut.diary.diary.domain.Diary;
+import com.fourcut.diary.diary.service.DiaryRetriever;
 import com.fourcut.diary.notification.domain.Notification;
 import com.fourcut.diary.notification.util.NotificationTimeSlotUtil;
 import com.fourcut.diary.user.domain.User;
@@ -20,6 +22,7 @@ public class NotificationService {
     private static final int EXPIRATION_MINUTES = 20;
 
     private final UserRetriever userRetriever;
+    private final DiaryRetriever diaryRetriever;
 
     private final NotificationRetriever notificationRetriever;
     private final NotificationModifier notificationModifier;
@@ -35,8 +38,9 @@ public class NotificationService {
     public PictureCaptureInfoDto getTakePictureInfoByUser(String socialId) {
         User user = userRetriever.getUserBySocialId(socialId);
         Notification notification = notificationRetriever.getTodayNotification(user);
+        Diary todayDiary = diaryRetriever.getTodayDiary(user);
         LocalDateTime now = LocalDateTime.now();
-        return getTakePictureInfo(notification, now);
+        return getTakePictureInfo(notification, todayDiary, now);
     }
 
     @Transactional
@@ -53,7 +57,7 @@ public class NotificationService {
         return notificationRetriever.getAllNotifications();
     }
 
-    private PictureCaptureInfoDto getTakePictureInfo(Notification notification, LocalDateTime now) {
+    private PictureCaptureInfoDto getTakePictureInfo(Notification notification, Diary todayDiary, LocalDateTime now) {
         List<LocalDateTime> timeSlots = List.of(
                 notification.getFirstTimeSlot(),
                 notification.getSecondTimeSlot(),
@@ -63,8 +67,10 @@ public class NotificationService {
 
         for (int i = 0; i < timeSlots.size(); i++) {
             LocalDateTime slot = timeSlots.get(i);
-            if (notification.isPossibleEnrollPicture(now, i + 1)) {
-                return new PictureCaptureInfoDto(i + 1, slot.plusMinutes(EXPIRATION_MINUTES).toLocalTime());
+            int pictureIndex = i + 1;
+            // 시간 슬롯 내에 있고, 해당 슬롯에 아직 사진이 등록되지 않은 경우에만 촬영 가능
+            if (notification.isPossibleEnrollPicture(now, pictureIndex) && !todayDiary.hasPictureAt(pictureIndex)) {
+                return new PictureCaptureInfoDto(pictureIndex, slot.plusMinutes(EXPIRATION_MINUTES).toLocalTime());
             }
         }
         return new PictureCaptureInfoDto(-1, null);
