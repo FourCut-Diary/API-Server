@@ -4,6 +4,9 @@ import com.fourcut.diary.auth.service.AuthService;
 import com.fourcut.diary.aws.EventBridgeService;
 import com.fourcut.diary.aws.SnsService;
 import com.fourcut.diary.client.SocialType;
+import com.fourcut.diary.constant.ErrorMessage;
+import com.fourcut.diary.exception.model.BadRequestException;
+import com.fourcut.diary.exception.model.NotFoundException;
 import com.fourcut.diary.jwt.JwtToken;
 import com.fourcut.diary.jwt.JwtTokenManager;
 import com.fourcut.diary.notification.service.NotificationService;
@@ -39,23 +42,36 @@ public class AuthFacade {
     private final SnsService snsService;
 
     public SignupResponse signup(SignupRequest request) {
-        SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
+        String socialId;
+        String profileImageUrl = null;
+
+        if (request.hasSocialId()) {
+            socialId = request.socialId();
+        }
+
+        else if (request.hasAuthorizationCode()) {
+            SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
+            socialId = socialLoginResponse.socialId();
+            profileImageUrl = socialLoginResponse.profileImageUrl();
+        } else {
+            throw new BadRequestException(ErrorMessage.MISSING_AUTH_CREDENTIALS);
+        }
 
         String snsEndpointArd = snsService.createEndpoint(request.fcmToken());
         Long id = userService.createUser(
-                socialLoginResponse.socialId(),
+                socialId,
                 request.nickname(),
                 request.birthday(),
                 request.gender(),
                 request.dailyStartTime(),
                 request.dailyEndTime(),
-                socialLoginResponse.profileImageUrl(),
+                profileImageUrl,
                 snsEndpointArd,
                 request.fcmToken()
         );
 
-        JwtToken jwtToken = getJwtToken(socialLoginResponse.socialId());
-        List<LocalDateTime> timeSlot = notificationService.createNotification(socialLoginResponse.socialId());
+        JwtToken jwtToken = getJwtToken(socialId);
+        List<LocalDateTime> timeSlot = notificationService.createNotification(socialId);
         eventBridgeService.enrollPushNotificationScheduler(id, timeSlot);
 
         return new SignupResponse(id, jwtToken.accessToken(), jwtToken.refreshToken());
@@ -63,15 +79,20 @@ public class AuthFacade {
 
     public LoginResponse login(LoginRequest request) {
         SocialLoginResponse socialLoginResponse = getSocialInfo(request.socialType(), request.authorizationCode());
-        User loginUser = userService.getUserBySocialId(socialLoginResponse.socialId());
-        if (loginUser.isDifferentFcmToken(request.fcmToken())) {
-            String newSnsEndpointArn = snsService.createEndpoint(request.fcmToken());
-            loginUser.updateFcmToken(request.fcmToken());
-            loginUser.updateSnsEndpoint(newSnsEndpointArn);
-        }
-        JwtToken jwtToken = getJwtToken(loginUser.getSocialId());
 
-        return new LoginResponse(loginUser.getId(), jwtToken.accessToken(), jwtToken.refreshToken());
+        try {
+            User loginUser = userService.getUserBySocialId(socialLoginResponse.socialId());
+            if (loginUser.isDifferentFcmToken(request.fcmToken())) {
+                String newSnsEndpointArn = snsService.createEndpoint(request.fcmToken());
+                loginUser.updateFcmToken(request.fcmToken());
+                loginUser.updateSnsEndpoint(newSnsEndpointArn);
+            }
+            JwtToken jwtToken = getJwtToken(loginUser.getSocialId());
+
+            return LoginResponse.success(loginUser.getId(), jwtToken.accessToken(), jwtToken.refreshToken());
+        } catch (NotFoundException e) {
+            return LoginResponse.needsSignup(socialLoginResponse.socialId());
+        }
     }
 
     public TokenRefreshResponse refreshToken(String socialId, TokenRefreshRequest request) {
