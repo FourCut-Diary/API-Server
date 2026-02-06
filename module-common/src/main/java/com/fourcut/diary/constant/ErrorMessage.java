@@ -28,6 +28,7 @@ public enum ErrorMessage {
     // user
     ALREADY_ENROLL_USER(HttpStatus.CONFLICT.value(), "이미 등록된 사용자입니다."),
     NOT_FOUND_USER(HttpStatus.NOT_FOUND.value(), "존재하지 않는 사용자입니다."),
+    MISSING_AUTH_CREDENTIALS(HttpStatus.BAD_REQUEST.value(), "authorizationCode 또는 socialId가 필요합니다."),
 
     // notification_time
     NOT_FOUND_NOTIFICATION_TIME(HttpStatus.NOT_FOUND.value(), "해당 유저의 알림 시간이 존재하지 않습니다."),

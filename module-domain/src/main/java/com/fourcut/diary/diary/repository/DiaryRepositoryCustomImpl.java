@@ -47,17 +47,19 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
     }
 
     @Override
-    public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment) {
+    public void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment, LocalDateTime captureTime) {
 
         QDiary diary = QDiary.diary;
         PathBuilder<Diary> entityPath = new PathBuilder<>(Diary.class, "diary");
         Path<String> pictureColumnPath = getPictureOrderColumnPath(entityPath, index);
         Path<String> commentColumnPath = getCommentOrderColumnPath(entityPath, index);
+        Path<LocalDateTime> captureTimeColumnPath = getCaptureTimeOrderColumnPath(entityPath, index);
 
         queryFactory
                 .update(diary)
                 .set(pictureColumnPath, imageUrl)
                 .set(commentColumnPath, comment)
+                .set(captureTimeColumnPath, captureTime)
                 .where(diary.id.eq(diaryId))
                 .execute();
     }
@@ -78,6 +80,16 @@ public class DiaryRepositoryCustomImpl implements DiaryRepositoryCustom {
             case 2 -> entityPath.getString("secondComment");
             case 3 -> entityPath.getString("thirdComment");
             case 4 -> entityPath.getString("fourthComment");
+            default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
+        };
+    }
+
+    private Path<LocalDateTime> getCaptureTimeOrderColumnPath(PathBuilder<Diary> entityPath, Integer columnIndex) {
+        return switch (columnIndex) {
+            case 1 -> entityPath.getDateTime("firstCaptureTime", LocalDateTime.class);
+            case 2 -> entityPath.getDateTime("secondCaptureTime", LocalDateTime.class);
+            case 3 -> entityPath.getDateTime("thirdCaptureTime", LocalDateTime.class);
+            case 4 -> entityPath.getDateTime("fourthCaptureTime", LocalDateTime.class);
             default -> throw new BadRequestException(ErrorMessage.INVALID_PICTURE_INDEX);
         };
     }

@@ -20,10 +20,10 @@ public class UserService {
     private final UserRetriever userRetriever;
 
     @Transactional
-    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
+    public Long createUser(String socialId, String nickname, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String profileImage, String snsEndpointArn, String fcmToken) {
 
         userRetriever.checkAlreadyExistedUser(socialId);
-        return userModifier.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, snsEndpointArn, fcmToken);
+        return userModifier.createUser(socialId, nickname, birthday, gender, dailyStartTime, dailyEndTime, profileImage, snsEndpointArn, fcmToken);
     }
 
     @Transactional(readOnly = true)
@@ -37,6 +37,6 @@ public class UserService {
 
         User user = userRetriever.getUserBySocialId(socialId);
         long daysAfterRegistration = ChronoUnit.DAYS.between(user.getCreatedAt(), LocalDateTime.now()) + 1;
-        return new UserProfileDto(user.getId(), "image", user.getNickname(), daysAfterRegistration);
+        return new UserProfileDto(user.getId(), user.getProfileImage(), user.getNickname(), daysAfterRegistration);
     }
 }

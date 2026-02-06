@@ -16,8 +16,8 @@ public class UserModifier {
 
     private final UserRepository userRepository;
 
-    public Long createUser(String socialId, String name, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String snsEndpointArn, String fcmToken) {
-        User newUser = User.newInstance(socialId, name, birthday, gender, dailyStartTime, dailyEndTime, snsEndpointArn, fcmToken);
+    public Long createUser(String socialId, String name, LocalDate birthday, Gender gender, LocalTime dailyStartTime, LocalTime dailyEndTime, String profileImage, String snsEndpointArn, String fcmToken) {
+        User newUser = User.newInstance(socialId, name, birthday, gender, dailyStartTime, dailyEndTime, profileImage, snsEndpointArn, fcmToken);
         userRepository.save(newUser);
 
         return newUser.getId();

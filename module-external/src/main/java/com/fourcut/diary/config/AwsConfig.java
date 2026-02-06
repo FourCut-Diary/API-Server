@@ -59,4 +59,8 @@ public class AwsConfig {
     public String getEventBridgeRoleArn() {
         return environmentVariableConfig.getEventBridgeRoleArn();
     }
+
+    public String getCdnBaseUrl() {
+        return environmentVariableConfig.getCdnBaseUrl();
+    }
 }

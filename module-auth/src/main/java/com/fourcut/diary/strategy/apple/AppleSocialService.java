@@ -60,7 +60,7 @@ public class AppleSocialService implements SocialStrategy {
         String appleIdToken = appleOAuth2TokenResponse.idToken();
         AppleUserResponse appleUser = appleTokenUtil.decodePayload(appleIdToken, AppleUserResponse.class);
 
-        return new SocialLoginResponse(appleUser.sub());
+        return new SocialLoginResponse(appleUser.sub(), null);
     }
 
     private AppleOAuth2TokenResponse getAccessToken(String authorizationCode) {

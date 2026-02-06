@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -49,6 +50,18 @@ public class Diary extends AuditingTimeEntity {
     private String fourthComment;
 
     @Column
+    private LocalDateTime firstCaptureTime;
+
+    @Column
+    private LocalDateTime secondCaptureTime;
+
+    @Column
+    private LocalDateTime thirdCaptureTime;
+
+    @Column
+    private LocalDateTime fourthCaptureTime;
+
+    @Column
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -61,5 +74,15 @@ public class Diary extends AuditingTimeEntity {
 
     public void enrollDailyPicture(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean hasPictureAt(int index) {
+        return switch (index) {
+            case 1 -> this.firstPicture != null;
+            case 2 -> this.secondPicture != null;
+            case 3 -> this.thirdPicture != null;
+            case 4 -> this.fourthPicture != null;
+            default -> false;
+        };
     }
 }

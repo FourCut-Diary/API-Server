@@ -38,8 +38,11 @@ public class DiaryRetriever {
         return diaryRepository.findDiaryImageByMonth(user.getId(), date);
     }
 
-    public Integer countDiaryByUser(User user) {
-        return diaryRepository.countByUser(user);
+    /**
+     * 완료된 일기 개수 반환 (제목과 최종 이미지가 모두 있는 경우만 카운트)
+     */
+    public Integer countCompletedDiaryByUser(User user) {
+        return diaryRepository.countByUserAndTitleIsNotNullAndImageUrlIsNotNull(user);
     }
 
     public boolean existsDiary(User user, LocalDate date) {

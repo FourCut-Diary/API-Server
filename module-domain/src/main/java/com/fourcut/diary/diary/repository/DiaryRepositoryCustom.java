@@ -3,10 +3,11 @@ package com.fourcut.diary.diary.repository;
 import com.fourcut.diary.diary.repository.dto.DiaryImageDto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface DiaryRepositoryCustom {
 
     List<DiaryImageDto> findDiaryImageByMonth(Long userId, LocalDate date);
-    void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment);
+    void enrollPictureInDiary(Long diaryId, String imageUrl, Integer index, String comment, LocalDateTime captureTime);
 }

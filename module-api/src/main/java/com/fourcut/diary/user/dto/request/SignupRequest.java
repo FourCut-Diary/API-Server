@@ -14,8 +14,11 @@ public record SignupRequest(
         @NotNull(message = ValidationMessage.NULL_SOCIAL_TYPE)
         SocialType socialType,
 
-        @NotBlank(message = ValidationMessage.INVALID_AUTHORIZATION_CODE)
+        // authorizationCode 또는 socialId 중 하나는 필수 (커스텀 검증 필요)
         String authorizationCode,
+
+        // 로그인 시 받은 socialId (authorizationCode 대신 사용 가능)
+        String socialId,
 
         @NotBlank(message = ValidationMessage.INVALID_FCM_TOKEN)
         String fcmToken,
@@ -35,4 +38,12 @@ public record SignupRequest(
         @NotNull(message = ValidationMessage.NULL_DAILY_END_TIME)
         LocalTime dailyEndTime
 ) {
+
+    public boolean hasSocialId() {
+        return socialId != null && !socialId.isBlank();
+    }
+
+    public boolean hasAuthorizationCode() {
+        return authorizationCode != null && !authorizationCode.isBlank();
+    }
 }

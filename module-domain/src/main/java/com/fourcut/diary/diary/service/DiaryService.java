@@ -50,7 +50,7 @@ public class DiaryService {
     public MonthDiaryDto getMonthDiaryByUser(String socialId, LocalDate date) {
         User user = userRetriever.getUserBySocialId(socialId);
         List<DiaryImageDto> diaryList = diaryRetriever.findDiaryImageByMonth(user, date);
-        Integer countDiary = diaryRetriever.countDiaryByUser(user);
+        Integer countDiary = diaryRetriever.countCompletedDiaryByUser(user);
 
         return new MonthDiaryDto(date.withDayOfMonth(1), diaryList, countDiary);
     }
@@ -63,7 +63,7 @@ public class DiaryService {
         if(!notification.isPossibleEnrollPicture(now, index)) {
             throw new BadRequestException(ErrorMessage.INVALID_PICTURE_TIME);
         }
-        diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment);
+        diaryModifier.enrollPictureInDiary(diary, imageUrl, index, comment, now);
     }
 
     @Transactional

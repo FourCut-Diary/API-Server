@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class EnvironmentVariableConfig {
 
+    @Value("${cdn.base-url:}")
+    private String cdnBaseUrl;
+
     @Value("${aws.sns.access-key}")
     private String snsAccessKey;
 
