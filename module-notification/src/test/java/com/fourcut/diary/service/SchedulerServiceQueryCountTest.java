@@ -70,6 +70,7 @@ public class SchedulerServiceQueryCountTest {
                         com.fourcut.diary.user.domain.Gender.MALE,
                         LocalTime.of(8, 0),
                         LocalTime.of(20, 0),
+                        "profileImageUrl",
                         "arn"    + i,
                         "token"  + i
                 ))
